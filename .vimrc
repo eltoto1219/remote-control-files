@@ -17,15 +17,18 @@ set expandtab
 nnoremap <C-a> $i<right>
 
 if !has('nvim')
-    nnoremap <C-e> :silent !clear <enter>:shell <enter>
+    tnoremap <C-d> <C-d><C-W>:bd!<enter>
+    nnoremap <C-e> :silent !tmux new-session -A -s antonio <enter> :terminal ++curwin <enter>
 endif
+
 if has('nvim')
+    nnoremap <C-e> :silent !tmux new-session -A -s antonio <enter> :terminal ++curwin <enter>
     nnoremap <C-e> :silent !clear <enter>:terminal <enter>
 endif
 
-"inoremap jh <esc> :w <enter> kj
+tnoremap jh <C-\><C-n>
 inoremap jh <esc> 
-"colorscheme darkblue
+
 "plugin manager"
 call plug#begin('~/.vim/plugged')
 Plug 'tpope/vim-sensible'
@@ -43,3 +46,5 @@ call plug#end()
 set laststatus=2
 "let airline_statusline_ontop=1
 hi Normal guibg=NONE ctermbg=NONE
+
+
