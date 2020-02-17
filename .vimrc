@@ -1,6 +1,4 @@
 set hidden
-silent terminal ++curwin 
-silent bp
 set hlsearch 
 set smartcase
 nnoremap <silent> <Space> :nohlsearch<Bar>:echo<CR>
@@ -27,7 +25,7 @@ if !has('nvim')
     tnoremap <C-x> <C-W>:silent :bp <enter>
     "nnoremap <C-e> :silent !tmux new-session -A -s antonio <enter> :terminal ++curwin <enter>
     "nnoremap <C-e> :silent | tabedit | terminal ++curwin 
-    nnoremap <C-e> :silent! b bash<enter>
+    nnoremap <C-e> :b bash <enter> <C-W>:silent! set autoread <enter>
 endif
 
 if has('nvim')
@@ -43,7 +41,6 @@ call plug#begin('~/.vim/plugged')
 Plug 'tpope/vim-sensible'
 Plug 'ervandew/supertab'
 Plug 'yggdroot/indentline'
-Plug 'vim-syntastic/syntastic'
 Plug 'vim-airline/vim-airline'
 
 "inoremap jh <esc> :w <enter> kj
@@ -55,3 +52,6 @@ call plug#end()
 hi Normal guibg=NONE ctermbg=NONE
 set laststatus=2
 "let airline_statusline_ontop=1
+silent terminal ++curwin 
+silent bp
+
