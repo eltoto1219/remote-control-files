@@ -39,7 +39,7 @@ if !has('nvim')
     tnoremap <C-x> <C-W>:silent :bp <enter>
     "nnoremap <C-e> :silent !tmux new-session -A -s antonio <enter> :terminal ++curwin <enter>
     "jump to term buffer
-    nnoremap <C-e> :b bash <enter> <C-W>:silent! set autoread <enter>
+    nnoremap <C-e> :w <enter> :b bash <enter> <C-W>:silent! set autoread <enter>
     "exit out of all buffers and quit vim
     nnoremap <C-c> :b bash <enter> <C-W>:silent! bd! <enter> :q <enter>
 endif
