@@ -15,9 +15,8 @@ set shiftwidth=4
 set expandtab
 
 "syntax
-syntax enable
-syntax on
-let python_highlight_all=1
+"syntax enable
+"syntax on
 
 "colorscheme
 colorscheme darkblue
@@ -66,11 +65,15 @@ Plug 'ervandew/supertab'
 Plug 'preservim/nerdtree'
 Plug 'w0rp/ale'
 "Plug 'psf/black'
-
+Plug 'vim-python/python-syntax'
 let NERDTreeMapOpenInTab='\r'
 let NERDTreeWinSize = 20
 call plug#end()
 "open terminal buffer and then go back to original file
+"let python_highlight_all=1
+let g:python_highlight_all = 1
+let g:python_slow_sync = 0
+
 if !has('nvim')
     silent terminal ++curwin
     "silent bp
