@@ -26,7 +26,6 @@ hi Normal guibg=NONE ctermbg=NONE
 "normal mode key mapping
 nnoremap <silent> <Space> :nohlsearch<Bar>:echo<CR>
 nnoremap <C-a> $i<right>
-tnoremap jh <C-\><C-n>
 inoremap jh <Esc>
 nnoremap <C-n> :bn <enter>
 nnoremap <C-p> :bp <enter>
@@ -38,34 +37,35 @@ if has('nvim')
     tnoremap <C-d> <C-\><C-n>:silent! e# <enter>
     tnoremap <C-t> <C-\><C-n>:NERDTreeToggle<CR>
     nnoremap <C-c> :silent! bufdo q! <enter>
-else
-    tnoremap <C-n> <C-W>:silent :bn <enter>
-    tnoremap <C-p> <C-W>:silent :bp <enter>
-    tnoremap <C-d> <C-W>:silent! e# <enter>
-    tnoremap <C-t> <C-W>:NERDTreeToggle<CR>
-    nnoremap <C-c> :b !/bin/bash <enter> <C-W>:silent! bd! <enter> :q! <enter>
+    nnoremap <C-e> :w <enter>:b bash <enter> <C-\><C-n>:silent! set autoread <bar> startinsert <enter>
+    "start term
+    exec "silent terminal"
 endif
 
-"mapping that depends on version
+"mapping that depends on version (note: nvim will always have term command)
 if exists(':terminal') == 0
     nnoremap <C-e> :w <enter> <bar> :shell <enter>
+    nnoremap <C-c> :silent! q! <enter>
 else
-    "first open terminal buffer
-    if has('nvim')
-        exec "silent terminal"
-        "term mapping for nvmim
-        nnoremap <C-e> :w <enter>:b bash <enter> <C-\><C-n>:silent! set autoread <bar> startinsert <enter>
-    else
+    "commands for terminal regardless of n/vim
+    if !has('nvim')
         "term mapping for vim
-        silent terminal ++curwin
+        tnoremap <C-n> <C-W>:silent :bn <enter>
+        tnoremap <C-p> <C-W>:silent :bp <enter>
+        tnoremap <C-d> <C-W>:silent! e# <enter>
+        tnoremap <C-t> <C-W>:NERDTreeToggle<CR>
+        nnoremap <C-c> :b !/bin/bash <enter> <C-W>:silent! bd! <enter> :q! <enter>
         nnoremap <C-e> :w <enter>:b bash <enter> <C-W>:silent! set autoread <bar> startinsert <enter>
+        "open term buffer
+        silent terminal ++curwin
     endif
-    "second come back to og buffer
+    "second come back to og buffer (n/vim)
     autocmd BufWinEnter,WinEnter term://* startinsert
     autocmd VimEnter,BufLeave term://* stopinsert
     silent! bp!
-    "map del buffer function
+    "add mappings
     nnoremap <C-d> :silent! call DelBuffer() <CR>
+    tnoremap jh <C-\><C-n>
 endif
 
 "on startup
