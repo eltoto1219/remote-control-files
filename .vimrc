@@ -78,6 +78,7 @@ Plug 'ervandew/supertab'
 Plug 'preservim/nerdtree'
 Plug 'w0rp/ale'
 Plug 'vim-python/python-syntax'
+Plug 'Yggdroot/indentLine'
 call plug#end()
 
 "misc language/plugin settings
