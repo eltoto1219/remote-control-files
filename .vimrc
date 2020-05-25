@@ -26,7 +26,7 @@ hi Normal guibg=NONE ctermbg=NONE
 "normal mode key mapping
 nnoremap <silent> <Space> :nohlsearch<Bar>:echo<CR>
 nnoremap <C-a> $i<right>
-inoremap jh <Esc>
+inoremap jk <Esc>
 nnoremap <C-n> :bn <enter>
 nnoremap <C-p> :bp <enter>
 
@@ -76,7 +76,7 @@ call plug#begin('~/.vim/plugged')
 Plug 'tpope/vim-sensible'
 Plug 'ervandew/supertab'
 Plug 'preservim/nerdtree'
-Plug 'w0rp/ale'
+"Plug 'w0rp/ale'
 Plug 'vim-python/python-syntax'
 Plug 'Yggdroot/indentLine'
 call plug#end()
