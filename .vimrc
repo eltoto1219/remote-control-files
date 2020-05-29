@@ -26,7 +26,7 @@ hi Normal guibg=NONE ctermbg=NONE
 "normal mode key mapping
 nnoremap <silent> <Space> :nohlsearch<Bar>:echo<CR>
 nnoremap <C-a> $i<right>
-inoremap jk <Esc>
+inoremap hj <Esc>
 nnoremap <C-n> :bn <enter>
 nnoremap <C-p> :bp <enter>
 
