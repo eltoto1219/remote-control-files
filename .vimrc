@@ -29,10 +29,7 @@ highlight  ColorColumn ctermbg=0 guibg=lightgrey
 "normal mode key mapping
 "nnoremap <silent> <Space> :nohlsearch<Bar>:echo<CR>
 if has('nvim')
-    tnoremap <C-n> <C-\><C-n>:silent :bn <enter>
-    tnoremap <C-p> <C-\><C-n>:silent :bp <enter>
     tnoremap <C-d> <C-\><C-n>:silent! e# <enter>
-    tnoremap <C-t> <C-\><C-n>:NERDTreeToggle<CR>
     nnoremap <C-c> :silent! bufdo q! <enter>
     nnoremap <C-e> :w <enter>:b bash <enter> <C-\><C-n>:silent! set autoread <bar> startinsert <enter>
     "start term
@@ -47,10 +44,7 @@ else
     "commands for terminal regardless of n/vim
     if !has('nvim')
         "term mapping for vim
-        tnoremap <C-n> <C-W>:silent :bn <enter>
-        tnoremap <C-p> <C-W>:silent :bp <enter>
         tnoremap <C-d> <C-W>:silent! e# <enter>
-        tnoremap <C-t> <C-W>:NERDTreeToggle<CR>
         nnoremap <C-c> :b !/bin/bash <enter> <C-W>:silent! bd! <enter> :q! <enter>
         nnoremap <C-e> :w <enter>:b bash <enter> <C-W>:silent! set autoread <bar> startinsert <enter>
         "open term buffer
@@ -62,7 +56,6 @@ else
     silent! bp!
     "add mappings
     nnoremap <C-d> :silent! call DelBuffer() <CR>
-    tnoremap hj   <C-\><C-n>
 endif
 
 "on startup
@@ -100,7 +93,6 @@ if executable('rg')
 endif
 
 let g:ctrlp_user_command = ['.git', 'git --gitdir=%s/.git ls-files -oc --exclude-standard']
-let mapleader="hj"
 let g:netrw_browse_g=2
 let g:netrw_banner=0
 let g:netrw_winsize=25
@@ -125,8 +117,12 @@ fun! <SID>StripTrailingWhitespaces()
 endfun
 
 
+
+let mapleader="jk"
+tnoremap <leader> <C-\><C-n>
+tnoremap <leader><Enter> <C-W>:silent! bn <CR>
 inoremap <C-a> $i<right>
-inoremap hj <Esc>
+inoremap jk <Esc>
 nnoremap <C-n> :bp <enter>
 nnoremap <C-m> :bn <enter>
 
