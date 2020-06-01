@@ -1,36 +1,33 @@
 "general settings "
+syntax enable
+syntax on
+set t_Co=256
+set noerrorbells
 set noinsertmode
+set tabstop=4 softtabstop=4
+set shiftwidth=4
+set expandtab
+set smartindent
+"set smartcase
+set nu
+set nowrap
 set hidden
-set hlsearch
-set smartcase
-set encoding=utf-8
-set number
 set cursorline
 set splitright
 set splitbelow
-set clipboard=unnamedplus
-set t_Co=256
-set tabstop=4
-set shiftwidth=4
-set expandtab
+set noswapfile
+set nobackup
+set undofile
+set undodir=~/.vim/undodir
 set mouse=
-
-"syntax
-syntax enable
-syntax on
-
-"colorscheme
-colorscheme delek
-hi Normal guibg=NONE ctermbg=NONE
+set clipboard=unnamedplus
+set encoding=utf-8
+set incsearch
+set colorcolumn=80
+highlight  ColorColumn ctermbg=0 guibg=lightgrey
 
 "normal mode key mapping
-nnoremap <silent> <Space> :nohlsearch<Bar>:echo<CR>
-nnoremap <C-a> $i<right>
-inoremap hj <Esc>
-nnoremap <C-n> :bn <enter>
-nnoremap <C-p> :bp <enter>
-
-"mapping for nvim vs vim
+"nnoremap <silent> <Space> :nohlsearch<Bar>:echo<CR>
 if has('nvim')
     tnoremap <C-n> <C-\><C-n>:silent :bn <enter>
     tnoremap <C-p> <C-\><C-n>:silent :bp <enter>
@@ -65,7 +62,7 @@ else
     silent! bp!
     "add mappings
     nnoremap <C-d> :silent! call DelBuffer() <CR>
-    tnoremap jh <C-\><C-n>
+    tnoremap hj   <C-\><C-n>
 endif
 
 "on startup
@@ -73,25 +70,41 @@ autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
 
 "plugin manager"
 call plug#begin('~/.vim/plugged')
-Plug 'tpope/vim-sensible'
+Plug 'morhetz/gruvbox'
+Plug 'jremmen/vim-ripgrep'
+Plug 'tpope/vim-fugitive'
+"Plug 'tpope/vim-sensible'
+Plug 'leafgarland/typescript-vim'
+Plug 'vim-utils/vim-man'
 Plug 'ervandew/supertab'
-Plug 'preservim/nerdtree'
-"Plug 'w0rp/ale'
+Plug 'lyuts/vim-rtags'
+Plug 'kien/ctrlp.vim'
+Plug 'ycm-core/YouCompleteMe'
 Plug 'vim-python/python-syntax'
+Plug 'mbbill/undotree'
 Plug 'Yggdroot/indentLine'
 call plug#end()
+
+colorscheme gruvbox
+set background=dark
 
 "misc language/plugin settings
 let python_highlight_all=1
 let g:python_highlight_all = 1
 let g:python_slow_sync = 0
-let NERDTreeMapOpenInTab='\r'
-let NERDTreeWinSize = 20
-let g:ale_linters = {'python': ['flake8']}
 let g:ale_fixers = {'*': [], 'python': ['black']}
 let g:ale_fix_on_save = 1
-nmap <C-t> :NERDTreeToggle<CR>
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+if executable('rg')
+    let g:rf_derive_root='true'
+endif
+
+let g:ctrlp_user_command = ['.git', 'git --gitdir=%s/.git ls-files -oc --exclude-standard']
+let mapleader="hj"
+let g:netrw_browse_g=2
+let g:netrw_banner=0
+let g:netrw_winsize=25
+let g:ctrlp_use_caching=0
 
 "functions
 function! DelBuffer()
@@ -110,3 +123,26 @@ fun! <SID>StripTrailingWhitespaces()
     %s/\s\+$//e
     call cursor(l, c)
 endfun
+
+
+inoremap <C-a> $i<right>
+inoremap hj <Esc>
+nnoremap <C-n> :bp <enter>
+nnoremap <C-m> :bn <enter>
+
+nnoremap <leader>h :wincmd h<CR>  :silent! set autoread <enter>
+nnoremap <leader>j :wincmd j<CR>  :silent! set autoread <enter>
+nnoremap <leader>k :wincmd k<CR> :silent! set autoread <enter>
+nnoremap <leader>l :wincmd l<CR>  :silent! set autoread <enter>
+
+nnoremap <leader>u :UndotreeShow<CR>
+nnoremap <Leader>pv :wincmd v<bar> :Ex <bar> :vertical resize 25<CR>
+nnoremap <Leader>t :silent term <enter> <C-W>:resize 5<CR>
+nnoremap <leader>ps :Rg<space>
+nnoremap <silent> <Leader>+ :vertical resize +5 <CR>
+nnoremap <silent> <Leader>- :vertical resize -5 <CR>
+nnoremap <silent> <Leader>gd :YcmCompleter GoTo<CR>
+nnoremap <silent> <Leader>gf :YcmCompleter FixIt<CR>
+nnoremap <silent> <Leader>gf :YcmCompleter FixIt<CR>
+
+
