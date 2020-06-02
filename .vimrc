@@ -1,3 +1,5 @@
+"let g:python3_host_prog = '/usr/local/lib/python3.6.6'
+silent! set %
 "general settings "
 syntax enable
 syntax on
@@ -70,9 +72,11 @@ Plug 'tpope/vim-fugitive'
 Plug 'leafgarland/typescript-vim'
 Plug 'vim-utils/vim-man'
 Plug 'ervandew/supertab'
-Plug 'lyuts/vim-rtags'
 Plug 'kien/ctrlp.vim'
-Plug 'ycm-core/YouCompleteMe'
+if has('python')
+    Plug 'ycm-core/YouCompleteMe',  { 'do': './install.py --tern-completer' }
+    Plug 'lyuts/vim-rtags'
+endif
 Plug 'vim-python/python-syntax'
 Plug 'mbbill/undotree'
 Plug 'Yggdroot/indentLine'
@@ -137,8 +141,10 @@ nnoremap <Leader>t :silent term <enter> <C-W>:resize 5<CR>
 nnoremap <leader>ps :Rg<space>
 nnoremap <silent> <Leader>+ :vertical resize +5 <CR>
 nnoremap <silent> <Leader>- :vertical resize -5 <CR>
-nnoremap <silent> <Leader>gd :YcmCompleter GoTo<CR>
-nnoremap <silent> <Leader>gf :YcmCompleter FixIt<CR>
-nnoremap <silent> <Leader>gf :YcmCompleter FixIt<CR>
+if has('python')
+    nnoremap <silent> <Leader>gd :YcmCompleter GoTo<CR>
+    nnoremap <silent> <Leader>gf :YcmCompleter FixIt<CR>
+    nnoremap <silent> <Leader>gf :YcmCompleter FixIt<CR>
+endif
 
 
