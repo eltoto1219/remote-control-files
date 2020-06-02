@@ -1,6 +1,7 @@
 "let g:python3_host_prog = '/usr/local/lib/python3.6.6'
-silent! set %
+"silent! set %
 "general settings "
+set backspace=2
 syntax enable
 syntax on
 set t_Co=256
@@ -117,22 +118,18 @@ fun! <SID>StripTrailingWhitespaces()
     call cursor(l, c)
 endfun
 
-
-
-let mapleader="jk"
-tnoremap <leader> <C-\><C-n>
+let mapleader="w"
+tnoremap jk <C-\><C-n>
 tnoremap <leader>k <C-\><C-n>:wincmd k<CR>
 tnoremap <leader><Enter> <C-W>:silent! bn <CR>
 inoremap <C-a> $i<right>
 inoremap jk <Esc>
 nnoremap <C-n> :bp <enter>
 nnoremap <C-m> :bn <enter>
-
-nnoremap <leader>h :wincmd h<CR>  :silent! set autoread <enter>
-nnoremap <leader>j :wincmd j<CR>  :silent! set autoread <enter>
-nnoremap <leader>k :wincmd k<CR> :silent! set autoread <enter>
-nnoremap <leader>l :wincmd l<CR>  :silent! set autoread <enter>
-
+nnoremap <leader>h :wincmd h <bar>:silent! set autoread <CR>
+nnoremap <leader>j :wincmd j <bar>:silent! set autoread <CR>
+nnoremap <leader>k :wincmd k <bar> :silent! set autoread <CR>
+nnoremap <leader>l :wincmd l <bar> :silent! set autoread <CR>
 nnoremap <leader>u :UndotreeShow<CR>
 nnoremap <Leader>pv :wincmd v<bar> :Ex <bar> :vertical resize 25<CR>
 nnoremap <Leader>t :silent term <enter> <C-W>:resize 5<CR>
