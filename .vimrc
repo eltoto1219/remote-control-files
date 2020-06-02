@@ -121,6 +121,7 @@ endfun
 
 let mapleader="jk"
 tnoremap <leader> <C-\><C-n>
+tnoremap <leader>k <C-\><C-n>:wincmd k<CR>
 tnoremap <leader><Enter> <C-W>:silent! bn <CR>
 inoremap <C-a> $i<right>
 inoremap jk <Esc>
@@ -139,6 +140,7 @@ nnoremap <leader>ps :Rg<space>
 nnoremap <silent> <Leader>+ :vertical resize +5 <CR>
 nnoremap <silent> <Leader>- :vertical resize -5 <CR>
 nnoremap <leader>q :silent! bufdo! q! <CR>
+nnoremap <leader>w :w <CR>
 if has('python')
     nnoremap <silent> <Leader>gd :YcmCompleter GoTo<CR>
     nnoremap <silent> <Leader>gf :YcmCompleter FixIt<CR>
