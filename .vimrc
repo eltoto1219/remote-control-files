@@ -32,7 +32,6 @@ highlight  ColorColumn ctermbg=0 guibg=lightgrey
 "nnoremap <silent> <Space> :nohlsearch<Bar>:echo<CR>
 if has('nvim')
     tnoremap <C-d> <C-\><C-n>:silent! e# <enter>
-    nnoremap <C-c> :silent! bufdo q! <enter>
     nnoremap <C-e> :w <enter>:b bash <enter> <C-\><C-n>:silent! set autoread <bar> startinsert <enter>
     "start term
     exec "silent terminal"
@@ -41,13 +40,11 @@ endif
 "mapping that depends on version (note: nvim will always have term command)
 if exists(':terminal') == 0
     nnoremap <C-e> :w <enter> <bar> :shell <enter>
-    nnoremap <C-c> :silent! q! <enter>
 else
     "commands for terminal regardless of n/vim
     if !has('nvim')
         "term mapping for vim
         tnoremap <C-d> <C-W>:silent! e# <enter>
-        nnoremap <C-c> :b !/bin/bash <enter> <C-W>:silent! bd! <enter> :q! <enter>
         nnoremap <C-e> :w <enter>:b bash <enter> <C-W>:silent! set autoread <bar> startinsert <enter>
         "open term buffer
         silent terminal ++curwin
@@ -141,6 +138,7 @@ nnoremap <Leader>t :silent term <enter> <C-W>:resize 5<CR>
 nnoremap <leader>ps :Rg<space>
 nnoremap <silent> <Leader>+ :vertical resize +5 <CR>
 nnoremap <silent> <Leader>- :vertical resize -5 <CR>
+nnoremap <leader>q :silent! bufdo! q! <CR>
 if has('python')
     nnoremap <silent> <Leader>gd :YcmCompleter GoTo<CR>
     nnoremap <silent> <Leader>gf :YcmCompleter FixIt<CR>
