@@ -116,8 +116,8 @@ nnoremap <leader>q :silent w! <bar>:silent! bufdo! q! <CR>
 nnoremap <leader>w :w <CR>
 nnoremap qq :silent! bufdo! q! <CR>
 autocmd FileType python map <buffer><leader>e :w !python3<CR>
+nnoremap <silent> <Leader>gt :ALEGoToDefinition<CR>
 if has('python')
-    nnoremap <silent> <Leader>gt :ALEGoToDefinition<CR>
     nnoremap <silent> <Leader>gf :YcmCompleter FixIt<CR>
 endif
 
