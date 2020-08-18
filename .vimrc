@@ -8,7 +8,6 @@
 "CocInstall coc-python
 "cocInstall coc-json
 "CocInstall coc-tsserver
-"jedi-vim-configuration
 
 
 " PLUGINS:
@@ -18,7 +17,6 @@ call plug#begin('~/.vim/plugged')
 Plug 'davidhalter/jedi-vim'
 Plug 'vim-python/python-syntax'
 Plug 'dense-analysis/ale'
-Plug 'editorconfig/editorconfig-vim'
 Plug 'morhetz/gruvbox'
 Plug 'jremmen/vim-ripgrep'
 Plug 'tpope/vim-fugitive'
@@ -186,10 +184,9 @@ nnoremap <space> :set hlsearch!<CR>
 " VIM MAPPINGS:
 nnoremap qq :silent! q! <CR>
 nnoremap ww :silent! w! <CR>
-nnoremap <leader>q :silent w! <bar>:silent! q! <CR>
-nnoremap <leader>a :norm A) <CR>
+nnoremap wq :silent! wq! <CR>
 nnoremap dw :norm! diwh <CR>
-nnoremap <leader>f za
+nnoremap <CR> za
 nnoremap <Leader>" ciw""<Esc>P
 nnoremap <Leader>' ciw''<Esc>P
 
