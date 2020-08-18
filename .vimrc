@@ -8,12 +8,15 @@
 "CocInstall coc-python
 "cocInstall coc-json
 "CocInstall coc-tsserver
+"jedi-vim-configuration
 
 
 " PLUGINS:
 let g:ale_completion_enabled = 0
 let g:ale_disable_lsp=1
 call plug#begin('~/.vim/plugged')
+Plug 'davidhalter/jedi-vim'
+Plug 'vim-python/python-syntax'
 Plug 'dense-analysis/ale'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'morhetz/gruvbox'
@@ -34,6 +37,17 @@ call plug#end()
 " PLUGIN SETTING:
 let g:tex_flavor = 'latex'
 
+let g:jedi#auto_vim_configuration = 0
+let g:jedi#completions_enabled = 0
+let g:jedi#show_call_signatures = 0
+let g:jedi#popup_on_dot = 0
+let g:jedi#goto_command = '<leader>c'
+let g:jedi#squelch_py_warning = 1
+let g:jedi#completions_command = '<tab>'
+let g:jedi#quikfix_window_height = 5
+let g:jedi#max_doc_height=10
+let g:jedi#winwidth=15
+"
 let g:airline#extensions#coc#enabled=1
 let g:airline#extensions#ale#enabled=1
 let g:airline#extensions#tabline#enabled=1
@@ -140,6 +154,7 @@ set mouse=
 set clipboard=unnamedplus
 set encoding=utf-8
 set incsearch
+set hlsearch
 set sel=exclusive
 set statusline^=%{coc#status()}
 set statusline+=%{StatusDiagnostic()}
@@ -156,6 +171,7 @@ set wildignore+=*/tmp/*,*.so,*.swp,*.zip
 " INTRACTIVE MAPPINGS:
 inoremap jk <Esc>
 inoremap <C-a> $i<right>
+" inoremap <silent> <buffer> <Tab> <c-x><c-o>
 
 " TERM MAPPINGS:
 tnoremap jk <C-\><C-n>
@@ -165,6 +181,7 @@ tnoremap <leader>k <C-W>:wincmd k<CR>
 tnoremap <leader>= <C-W>:resize +5 <CR>
 tnoremap <leader>- <C-W>:resize -5 <CR>
 nnoremap <leader>t :silent term <CR> <C-W>:resize 5<CR>
+nnoremap <space> :set hlsearch!<CR>
 
 " VIM MAPPINGS:
 nnoremap qq :silent! q! <CR>
@@ -177,10 +194,10 @@ nnoremap <Leader>" ciw""<Esc>P
 nnoremap <Leader>' ciw''<Esc>P
 
 " BUFFER MAPPINGS:
-nnoremap <leader>p :bp<enter>
-nnoremap <leader>u <C-u>
-nnoremap <leader>d <C-d>
-nnoremap <leader>n :bn<enter>
+nnoremap wu <C-u>
+nnoremap wd <C-d>
+nnoremap wp :bp <CR>
+nnoremap wn :bn <CR>
 nnoremap <leader>? :<C-u>execute "!pydoc3 " . expand("<cword>")<CR>
 
 
@@ -193,12 +210,11 @@ nnoremap <leader>= <C-W>:resize +5 <CR>
 nnoremap <leader>- <C-W>:resize -5 <CR>
 
 " PLUGIN MAPPING:
-nmap <leader>rr <Plug>(coc-rename)
-nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gc <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
-nnoremap <leader>prw :CocSearch <C-R>=expand("<cword>")<CR><CR>
+nnoremap <leader>rr :CocSearch <C-R>=expand("<cword>")<CR><CR>
 nmap <leader>pe <Plug>(ale_previous_wrap)
 nmap <leader>ne <Plug>(ale_next_wrap)
 
@@ -216,13 +232,21 @@ autocmd Filetype python nnoremap <buffer> <leader>e :w<CR>:vert ter python3 "%"<
 fun ExecFile()
 	call inputsave()
 	let filename  = input("file to excecute: ")
+	call inputrestore()
 	if filereadable(filename)
-		call inputrestore()
-		execute 'vert ter python3' filename
-		vertical resize 40
+		execute 'rightbelow vert ter python3' filename
+		vertical resize 45
 	else
 		echo "NOT A VALID FILE"
 	endif
 endfun
 
+fun SearchDoc()
+call inputsave()
+	let filename  = input("documentation search: ")
+	call inputrestore()
+	execute "!pydoc3 " . filename
+endfun
+
 nnoremap <leader>f :call ExecFile() <CR>
+nnoremap <leader>?? :call SearchDoc() <CR>
