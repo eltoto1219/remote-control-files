@@ -14,6 +14,7 @@ echo "set -o vi" >> $HOME/.bashrc
 #make sure pyvim is installed (we want those juicy python3 features)
 pip3 install --user --upgrade pynvim
 cp ./.vimrc $HOME/.vimrc
+cp ./setup.cfg $HOME/.vimrc
 cp ./coc-settings.json $HOME/.vim/coc-settings.json
 
 
