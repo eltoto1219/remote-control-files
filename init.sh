@@ -1,7 +1,27 @@
 #!/bin/bash
 
 #make sure that this python3 module is available
-pip3 install --user --upgrade pynvim
+#pip install --user --upgrade pynvim
+
+#download node js for the thing
+if [ ! -d ~/local ]; then
+	mkdir ~/local
+fi
+if [ ! -d ~/node-latest-install ]; then
+	mkdir ~/node-latest-install
+fi
+
+echo 'export PATH=$HOME/local/bin:$PATH' >> ~/.bashrc
+. ~/.bashrc
+cd ~/node-latest-install
+
+
+# curl -sL install-node.now.sh/lts | bash
+curl -L https://nodejs.org/download/release/latest/node-v14.8.0.tar.gz | tar xz --strip-components=1
+./configure --prefix=$HOME/local
+make install
+curl -L https://www.npmjs.com/install.sh | sh
+
 
 #set vimrc path an for neovim
 mkdir -p $HOME/.config/nvim; printf "set runtimepath^=~/.vim runtimepath+=~/.vim/after\nlet &packpath = &runtimepath\nsource ~/.vimrc" > $HOME/.config/nvim/init.vim
@@ -14,17 +34,17 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 echo "if [[ $TERM == xterm ]]; then TERM=xterm-256color; fi" >> $HOME/.bashrc
 echo "set -o vi" >> $HOME/.bashrc
 
-#make sure pyvim is installed (we want those juicy python3 features)
-pip3 install --user --upgrade pynvim
-cp ./.vimrc $HOME/.vimrc
-cp ./setup.cfg $HOME/.vimrc
-cp ./coc-settings.json $HOME/.vim/coc-settings.json
-
 #Run Plug Install
-vim -c 'PlugInstall!'
-vim -c 'PlugUpdate!'
-vim -c 'CocInstall -sync coc-json coc-css coc-html coc-tsserver coc-python coc-yaml coc-snippets|q'
+vim +'PlugInstall --sync' +qa
+vim +'PlugUpdate --sync' +qa
+vim +'CocInstall --sync coc-tsserver' +qa
+vim +'CocInstall --sync coc-python' +qa
+vim +'CocInstall --sync coc-snippets' +qa
+vim +'CocInstall --sync coc-css' +qa
+vim +'CocInstall --sync coc-json' +qa
+vim +'CocInstall --sync coc-yaml' +qa
 
 
-#auto add aws credentials
-#cant figure out
+#make sure pyvim is installed (we want those juicy python3 features)
+cp $HOME/remote-control-files/setup.cfg $HOME/setup.cfg
+cp $HOME/remote-control-files/coc-settings.json $HOME/.vim/coc-settings.json
