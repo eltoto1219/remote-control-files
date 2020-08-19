@@ -1,14 +1,5 @@
-" DEBUG PYTHON THREE:
-" pip3 install --user pynvim
-" :UpdateRemotePlugins
-" pip3 install --user --upgrade pynvim
-"or try setting to virtual env
-"
-"Dont forget, if you are on a new server, run the following
-"CocInstall coc-python
-"cocInstall coc-json
-"CocInstall coc-tsserver
-
+"SET LEADER:
+let mapleader="w"
 
 " PLUGINS:
 let g:ale_completion_enabled = 0
@@ -34,8 +25,10 @@ call plug#end()
 
 " PLUGIN SETTING:
 let g:tex_flavor = 'latex'
-
+let g:coc_global_extensions = [ 'coc-json', 'coc-css', 'coc-html',  'coc-tsserver' , 'coc-python', 'coc-yaml', 'coc-snippets' ]
+let g:coc_disable_startup_warning=1
 let g:jedi#auto_vim_configuration = 0
+let g:jedi#auto_initialization = 0
 let g:jedi#completions_enabled = 0
 let g:jedi#show_call_signatures = 0
 let g:jedi#popup_on_dot = 0
@@ -45,13 +38,11 @@ let g:jedi#completions_command = '<tab>'
 let g:jedi#quikfix_window_height = 5
 let g:jedi#max_doc_height=10
 let g:jedi#winwidth=15
-"
 let g:airline#extensions#coc#enabled=1
 let g:airline#extensions#ale#enabled=1
 let g:airline#extensions#tabline#enabled=1
 let g:airline#extensions#tabline#formatter='unique_tail'
 let g:airline_theme="alduin"
-
 let g:ctrlp_working_path_mode = 'ra'
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip
 let g:ctrlp_custom_ignore = {
@@ -63,12 +54,9 @@ let g:ctrlp_user_command = 'find %s -type f'
 let g:ctrlp_use_caching=0
 let g:ctrlp_map = '<leader>s'
 let g:ctrlp_cmd = 'CtrlP'
-
 let g:netrw_browse_g=2
 let g:netrw_banner=0
 let g:netrw_winsize=25
-
-let g:coc_disable_startup_warning=1
 let g:ale_completion_autoimport = 1
 let g:ale_fixers={'python': ['autopep8', 'yapf', 'black', 'isort'], 'javascript': ['prettier', 'eslint']}
 let g:ale_fix_on_save=1
@@ -86,9 +74,6 @@ let g:ale_set_loclist=0
 let g:ale_set_highlights=1
 let g:ale_sign_error='!'
 let g:ale_sign_warning='?'
-"help ale-lint
-"maximbaz/lightline-ale.
-
 let g:gruvbox_invert_selection = '0'
 let g:gruvbox_contrast_dark = 'hard'
 if executable('rg')
@@ -115,16 +100,24 @@ fun! <SID>StripTrailingWhitespaces()
     call cursor(l, c)
 endfun
 
-" STARTUP:
-" :let g:easytags_cmd = '/usr/local/bin/ctags'
-autocmd FileType python let b:easytags_auto_highlight = 0
-autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
-autocmd FileType python setlocal completeopt-=preview
-autocmd FileType python map <buffer><leader>e :w !python3<CR>
-augroup FiletypeGroup
-    autocmd!
-    au BufNewFile,BufRead *.jsx set filetype=javascript.jsx
-augroup END
+fun ExecFile()
+	call inputsave()
+	let filename  = input("file to excecute: ")
+	call inputrestore()
+	if filereadable(filename)
+		execute 'rightbelow vert ter python3' filename
+		vertical resize 45
+	else
+		echo "NOT A VALID FILE"
+	endif
+endfun
+
+fun SearchDoc()
+call inputsave()
+	let filename  = input("documentation search: ")
+	call inputrestore()
+	execute "!pydoc3 " . filename
+endfun
 
 " GENERAL:
 set tabstop=2
@@ -157,19 +150,52 @@ set sel=exclusive
 set statusline^=%{coc#status()}
 set statusline+=%{StatusDiagnostic()}
 set statusline+=%{FugitiveStatusline()}
-set colorcolumn=80
+set colorcolumn=88
 set background=dark
 colorscheme gruvbox
 hi ColorColumn ctermbg=819
 hi StatusLine ctermbg=819
-let mapleader="w"
 let python_highlight_all = 1
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip
 
+" STARTUP:
+autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
+autocmd FileType python setlocal completeopt-=preview
+autocmd FileType python map <buffer><leader>e :w !python3<CR>
+augroup FiletypeGroup
+    autocmd!
+    au BufNewFile,BufRead *.jsx set filetype=javascript.jsx
+augroup END
+autocmd FileType python set tabstop=4
+autocmd FileType python set softtabstop=4
+autocmd FileType python set shiftwidth=4
+autocmd FileType python set textwidth=79
+autocmd FileType python set expandtab
+autocmd FileType python set autoindent
+autocmd FileType python set fileformat=unix
+autocmd Filetype python nnoremap <buffer> <leader>e :w<CR>:vert ter python3 "%"<CR>
+
+" NORMAl MAPPINGS:
+nnoremap qq :silent! q! <CR>
+nnoremap ww :silent! w! <CR>
+nnoremap wq :silent! wq! <CR>
+nnoremap dw :norm! diwh <CR>
+nnoremap <CR> za
+nnoremap <Leader>" ciw""<Esc>P
+nnoremap <Leader>' ciw''<Esc>P
+nnoremap <Leader>"" ciW""<Esc>P
+nnoremap <Leader>'' ciW''<Esc>P
+nnoremap <Leader>d" ci""<Esc>P
+nnoremap <Leader>d' ci''<Esc>P
+nnoremap <Leader>d"" ciW""<Esc>P
+nnoremap <Leader>d'' ciW''<Esc>P
+nnoremap <Leader>[ :norm! {<CR>
+nnoremap <Leader>] :norm! }<CR>
+nnoremap <leader>. :call ExecFile() <CR>
+nnoremap <leader>/ :call SearchDoc() <CR>
+
 " INTRACTIVE MAPPINGS:
 inoremap jk <Esc>
-inoremap <C-a> $i<right>
-" inoremap <silent> <buffer> <Tab> <c-x><c-o>
 
 " TERM MAPPINGS:
 tnoremap jk <C-\><C-n>
@@ -178,25 +204,17 @@ tnoremap qq <C-W>:silent q!<CR>
 tnoremap <leader>k <C-W>:wincmd k<CR>
 tnoremap <leader>= <C-W>:resize +5 <CR>
 tnoremap <leader>- <C-W>:resize -5 <CR>
+tnoremap <leader>v= <C-W>:vert resize +5 <CR>
+tnoremap <leader>v- <C-W>:vert resize -5 <CR>
 nnoremap <leader>t :silent term <CR> <C-W>:resize 5<CR>
 nnoremap <space> :set hlsearch!<CR>
-
-" VIM MAPPINGS:
-nnoremap qq :silent! q! <CR>
-nnoremap ww :silent! w! <CR>
-nnoremap wq :silent! wq! <CR>
-nnoremap dw :norm! diwh <CR>
-nnoremap <CR> za
-nnoremap <Leader>" ciw""<Esc>P
-nnoremap <Leader>' ciw''<Esc>P
 
 " BUFFER MAPPINGS:
 nnoremap wu <C-u>
 nnoremap wd <C-d>
-nnoremap wp :bp <CR>
-nnoremap wn :bn <CR>
+nnoremap bp :bp!<CR>
+nnoremap bn :bn!<CR>
 nnoremap <leader>? :<C-u>execute "!pydoc3 " . expand("<cword>")<CR>
-
 
 " WINDOW MAPPING:
 nnoremap <leader>h :wincmd h <bar>:silent! set autoread <CR>
@@ -215,35 +233,21 @@ nnoremap <leader>rr :CocSearch <C-R>=expand("<cword>")<CR><CR>
 nmap <leader>pe <Plug>(ale_previous_wrap)
 nmap <leader>ne <Plug>(ale_next_wrap)
 
-"adjust tabs and stuff if python
-autocmd FileType python set tabstop=4
-autocmd FileType python set softtabstop=4
-autocmd FileType python set shiftwidth=4
-autocmd FileType python set textwidth=79
-autocmd FileType python set expandtab
-autocmd FileType python set autoindent
-autocmd FileType python set fileformat=unix
-autocmd Filetype python nnoremap <buffer> <leader>e :w<CR>:vert ter python3 "%"<CR>
+" MISC PLUGIN:
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
 
-" EXP:
-fun ExecFile()
-	call inputsave()
-	let filename  = input("file to excecute: ")
-	call inputrestore()
-	if filereadable(filename)
-		execute 'rightbelow vert ter python3' filename
-		vertical resize 45
-	else
-		echo "NOT A VALID FILE"
-	endif
-endfun
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
 
-fun SearchDoc()
-call inputsave()
-	let filename  = input("documentation search: ")
-	call inputrestore()
-	execute "!pydoc3 " . filename
-endfun
-
-nnoremap <leader>f :call ExecFile() <CR>
-nnoremap <leader>?? :call SearchDoc() <CR>
+if exists('*complete_info')
+  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
+else
+  inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+endif

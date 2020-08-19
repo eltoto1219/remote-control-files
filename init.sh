@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#make sure that this python3 module is available
+pip3 install --user --upgrade pynvim
+
 #set vimrc path an for neovim
 mkdir -p $HOME/.config/nvim; printf "set runtimepath^=~/.vim runtimepath+=~/.vim/after\nlet &packpath = &runtimepath\nsource ~/.vimrc" > $HOME/.config/nvim/init.vim
 
@@ -16,6 +19,11 @@ pip3 install --user --upgrade pynvim
 cp ./.vimrc $HOME/.vimrc
 cp ./setup.cfg $HOME/.vimrc
 cp ./coc-settings.json $HOME/.vim/coc-settings.json
+
+#Run Plug Install
+vim -c 'PlugInstall!'
+vim -c 'PlugUpdate!'
+vim -c 'CocInstall -sync coc-json coc-css coc-html coc-tsserver coc-python coc-yaml coc-snippets|q'
 
 
 #auto add aws credentials

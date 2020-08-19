@@ -9,8 +9,4 @@
   "suggest.floatEnable": true,
   "diagnostic.enable": false,
   "diagnostic.displayByAle": true,
-  "python.linting.flake8Args": [
-    "--ignore=E24,W504","E501",
-    "--verbose"
-  ]
 }
