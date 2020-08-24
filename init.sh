@@ -6,6 +6,14 @@
 #download node js for the thing
 wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 
+export NVM_DIR="$HOME/.nvm"
+echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"'  >> $HOME/.bachrc # This loads nvm
+echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> $HOME/.bashrc  # This loads nvm bash_completion
+
+#now isntall node
+source ~/.bashrc
+nvm use --delete-prefix v12.18.3
+npm config set prefix $NVM_DIR/versions/node/v12.18.3
 
 #set vimrc path an for neovim
 mkdir -p $HOME/.config/nvim; printf "set runtimepath^=~/.vim runtimepath+=~/.vim/after\nlet &packpath = &runtimepath\nsource ~/.vimrc" > $HOME/.config/nvim/init.vim
@@ -23,7 +31,6 @@ vim +'PlugInstall --sync' +qa
 vim +'PlugUpdate --sync' +qa
 vim +'CocInstall --sync coc-tsserver' +qa
 vim +'CocInstall --sync coc-python' +qa
-vim +'CocInstall --sync coc-snippets' +qa
 vim +'CocInstall --sync coc-css' +qa
 vim +'CocInstall --sync coc-json' +qa
 vim +'CocInstall --sync coc-yaml' +qa

@@ -25,7 +25,7 @@ call plug#end()
 
 " PLUGIN SETTING:
 let g:tex_flavor = 'latex'
-let g:coc_global_extensions = [ 'coc-json', 'coc-css', 'coc-html',  'coc-tsserver' , 'coc-python', 'coc-yaml', 'coc-snippets' ]
+let g:coc_global_extensions = ['coc-tsserver' , 'coc-python', 'coc-yaml', 'coc-json', 'coc-css', 'coc-html']
 let g:coc_disable_startup_warning=1
 let g:jedi#auto_vim_configuration = 0
 let g:jedi#auto_initialization = 0
@@ -92,6 +92,8 @@ else
 endif
 
 " GENERAL:
+let skip_defaults_vim=1
+set viminfo=""
 set tabstop=2
 set softtabstop=2
 set shiftwidth=2
