@@ -308,12 +308,14 @@ fun OpenTerm()
 		while(1 == 1)
 			if  bufexists(start_var) && (getbufvar(start_var, '&buftype') ==# 'terminal')
 				execute "vert sb" . start_var
-				set winwidth=110
+				wincmd=
+				exe "vert resize " . (winwidth(0) * 3/2)
 				break
 			endif
 			if (start_var == loopend)
 					execute "vert term"
-					set winwidth=110
+					wincmd=
+					exe "vert resize " . (winwidth(0) * 3/2)
 				break
 			endif
 			let start_var = start_var + 1
@@ -419,7 +421,7 @@ endfun
 
 function! ResizeSplits()
 	"later we can make logic for other stuff like for specific splits
-	set winwidth=115
 	wincmd=
+	exe "vert resize " . (winwidth(0) * 3/2)
 endfunction
 
