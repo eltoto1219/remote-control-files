@@ -1,7 +1,7 @@
 "SET LEADER:
 let mapleader="w"
 
-" PLUGINS:
+"' PLUGINS:
 let g:ale_completion_enabled = 0
 let g:ale_disable_lsp=1
 call plug#begin('~/.vim/plugged')
@@ -44,7 +44,6 @@ let g:airline#extensions#tabline#enabled=1
 let g:airline#extensions#tabline#formatter='unique_tail'
 let g:airline_theme="alduin"
 let g:ctrlp_working_path_mode = 'ra'
-set wildignore+=*/tmp/*,*.so,*.swp,*.zip
 let g:ctrlp_custom_ignore = {
   \ 'dir':  '\v[\/]\.(git|hg|svn)$',
   \ 'file': '\v\.(exe|so|dll)$',
@@ -81,7 +80,7 @@ if executable('rg')
     let g:rg_highlight="true"
 endif
 
-" set tags:
+" TAGS:
 set tags=$HOME/.vimtags
 
 " SIGNCOLUM:
@@ -91,33 +90,6 @@ if has("patch-8.1.1564")
 else
   set signcolumn=yes
 endif
-
-" FUNCTIONS:
-fun! <SID>StripTrailingWhitespaces()
-    let l = line(".")
-    let c = col(".")
-    %s/\s\+$//e
-    call cursor(l, c)
-endfun
-
-fun ExecFile()
-	call inputsave()
-	let filename  = input("file to excecute: ")
-	call inputrestore()
-	if filereadable(filename)
-		execute 'rightbelow vert ter python3' filename
-		vertical resize 45
-	else
-		echo "NOT A VALID FILE"
-	endif
-endfun
-
-fun SearchDoc()
-call inputsave()
-	let filename  = input("documentation search: ")
-	call inputrestore()
-	execute "!pydoc3 " . filename
-endfun
 
 " GENERAL:
 set tabstop=2
@@ -147,7 +119,7 @@ set encoding=utf-8
 set incsearch
 set hlsearch
 set sel=exclusive
-set statusline^=%{coc#status()}
+"set statusline^=%{coc#status()}
 set statusline+=%{StatusDiagnostic()}
 set statusline+=%{FugitiveStatusline()}
 set colorcolumn=88
@@ -156,15 +128,27 @@ colorscheme gruvbox
 hi ColorColumn ctermbg=819
 hi StatusLine ctermbg=819
 let python_highlight_all = 1
+hi Terminal ctermbg=black ctermfg=white guibg=black guifg=blue
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip
+set wildmenu
+set wildmode=longest:full,full
 
-" STARTUP:
+
+" AUTO Commands
+autocmd FileType css set omnifunc+=csscomplete#CompleteCSS
+autocmd FileType html set omnifunc+=htmlcomplete#CompleteTags
+autocmd FileType javascript set omnifunc+=javascriptcomplete#CompleteJS
 autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
 autocmd FileType python setlocal completeopt-=preview
-autocmd FileType python map <buffer><leader>e :w !python3<CR>
+autocmd FileType python map <leader>e :call ExecCurFile()<CR>
 augroup FiletypeGroup
     autocmd!
     au BufNewFile,BufRead *.jsx set filetype=javascript.jsx
+augroup END
+augroup ReduceNoise
+    autocmd!
+    " Automatically resize active split to 85 width
+    autocmd BufEnter,BufNewFile,WinEnter,WinNew * :call ResizeSplits()
 augroup END
 autocmd FileType python set tabstop=4
 autocmd FileType python set softtabstop=4
@@ -173,50 +157,52 @@ autocmd FileType python set textwidth=79
 autocmd FileType python set expandtab
 autocmd FileType python set autoindent
 autocmd FileType python set fileformat=unix
-autocmd Filetype python nnoremap <buffer> <leader>e :w<CR>:vert ter python3 "%"<CR>
+autocmd BufLeave term://* startinsert
+autocmd BufEnter term://* startinsert
 
 " NORMAl MAPPINGS:
-nnoremap qq :silent! q! <CR>
-nnoremap ww :silent! w! <CR>
-nnoremap wq :silent! wq! <CR>
-nnoremap dw :norm! diwh <CR>
-nnoremap <CR> za
-nnoremap <Leader>" ciw""<Esc>P
-nnoremap <Leader>' ciw''<Esc>P
+command -nargs=+ -complete=file Ex call ExecFile(<q-args>)
+nnoremap <nowait><Leader>" ciw""<Esc>P
+nnoremap <nowait><Leader>' ciw''<Esc>P
 nnoremap <Leader>"" ciW""<Esc>P
 nnoremap <Leader>'' ciW''<Esc>P
 nnoremap <Leader>d" ci""<Esc>P
 nnoremap <Leader>d' ci''<Esc>P
 nnoremap <Leader>d"" ciW""<Esc>P
 nnoremap <Leader>d'' ciW''<Esc>P
-nnoremap <Leader>[ :norm! {<CR>
-nnoremap <Leader>] :norm! }<CR>
-nnoremap <leader>. :call ExecFile() <CR>
 nnoremap <leader>/ :call SearchDoc() <CR>
+nnoremap <space> :set hlsearch!<CR>
+nnoremap <nowait><leader>f za
+nnoremap qq :call Quit() <CR>
+nnoremap ww :silent! w! <CR>
+nnoremap wq :call SaveQuit()<CR>
+nnoremap dw :norm! deh <CR>
+nnoremap <leader>t :call OpenTerm()<CR>
+nnoremap <nowait><leader>n :call NavForward()<CR>
+nnoremap <nowait><leader>p :call NavBackward()<CR>
+nnoremap <leader>? :<C-u>execute "!pydoc3 " . expand("<cword>")<CR>
+" PLUGIN MAPPING:
+nmap <silent> gc <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gr <Plug>(coc-references)
+nnoremap <leader>rr :CocSearch <C-R>=expand("<cword>")<CR><CR>
+nmap <leader>pe <Plug>(ale_previous_wrap)
+nmap <leader>ne <Plug>(ale_next_wrap)
+
 
 " INTRACTIVE MAPPINGS:
 inoremap jk <Esc>
 
 " TERM MAPPINGS:
 tnoremap jk <C-\><C-n>
-tnoremap <leader>t <C-W>:silent q!<CR>
-tnoremap qq <C-W>:silent q!<CR>
-tnoremap <leader>k <C-W>:wincmd k<CR>
-tnoremap <leader>= <C-W>:resize +5 <CR>
-tnoremap <leader>- <C-W>:resize -5 <CR>
-tnoremap <leader>v= <C-W>:vert resize +5 <CR>
-tnoremap <leader>v- <C-W>:vert resize -5 <CR>
-nnoremap <leader>t :silent term <CR> <C-W>:resize 5<CR>
-nnoremap <space> :set hlsearch!<CR>
-
-" BUFFER MAPPINGS:
-nnoremap wu <C-u>
-nnoremap wd <C-d>
-nnoremap bp :bp!<CR>
-nnoremap bn :bn!<CR>
-nnoremap <leader>? :<C-u>execute "!pydoc3 " . expand("<cword>")<CR>
-
-" WINDOW MAPPING:
+tnoremap <leader>t <C-W>:close!<CR>
+tnoremap qq <C-D><CR>
+tnoremap <nowait><leader>k <C-W>:wincmd k<CR>
+tnoremap <nowait><leader>j <C-W>:wincmd j<CR>
+tnoremap <nowait><leader>l <C-W>:wincmd l<CR>
+tnoremap <nowait><leader>h <C-W>:wincmd h<CR>
+tnoremap <leader>n <C-w>:call TerminalForward()<CR>
+tnoremap <leader>p <C-w>:call TerminalBackward()<CR>
 nnoremap <leader>h :wincmd h <bar>:silent! set autoread <CR>
 nnoremap <leader>j :wincmd j <bar>:silent! set autoread <CR>
 nnoremap <leader>k :wincmd k <bar> :silent! set autoread <CR>
@@ -224,21 +210,7 @@ nnoremap <leader>l :wincmd l <bar> :silent! set autoread <CR>
 nnoremap <leader>= <C-W>:resize +5 <CR>
 nnoremap <leader>- <C-W>:resize -5 <CR>
 
-" PLUGIN MAPPING:
-nmap <silent> gc <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-nnoremap <leader>rr :CocSearch <C-R>=expand("<cword>")<CR><CR>
-nmap <leader>pe <Plug>(ale_previous_wrap)
-nmap <leader>ne <Plug>(ale_next_wrap)
-
 " MISC PLUGIN:
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
 " Use <c-space> to trigger completion.
 if has('nvim')
   inoremap <silent><expr> <c-space> coc#refresh()
@@ -251,3 +223,201 @@ if exists('*complete_info')
 else
   inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 endif
+
+" FUNCTIONS:
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+fun! <SID>StripTrailingWhitespaces()
+    let l = line(".")
+    let c = col(".")
+    %s/\s\+$//e
+    call cursor(l, c)
+endfun
+
+fun SearchDoc()
+	call inputsave()
+	let filename  = input("documentation search: ", "", "function")
+	call inputrestore()
+	execute "!pydoc3 " . filename
+endfun
+
+
+fun BufferForward()
+	let curbuf = bufnr(bufname(bufnr("%")))
+	let bufnum = bufnr(bufname(bufnr("%")))
+	let bufcount = bufnr("$")
+	if (bufcount != 1) && (getbufvar("%", "&buftype") !=# 'terminal')
+		if (bufnum == bufcount) && (bufcount > 1)
+			let bufnum = bufnr(bufname(1))
+		else
+			let bufnum = bufnum + 1
+		endif
+		while(1 == 1)
+			if (bufnum == curbuf)
+				break
+			elseif bufexists(bufnum) && (getbufvar(bufnum, '&buftype') !=# 'terminal')
+				execute ":buffer ". bufnum
+				break
+			else
+				let bufnum = bufnum + 1
+			endif
+			if (bufnum >= bufcount)
+				let bufnum = 1
+			endif
+		endwhile
+	endif
+endfun
+
+fun BufferBackward()
+	let curbuf = bufnr(bufname(bufnr("%")))
+	let bufnum = bufnr(bufname(bufnr("%")))
+	let bufcount = bufnr("$")
+	if (bufcount != 1) && (getbufvar("%", "&buftype") !=# 'terminal')
+		if (bufnum == bufcount) && (bufcount > 1)
+			let bufnum = bufnr(bufcount -1)
+		else
+			let bufnum = bufnr(bufnum -1)
+		endif
+		while(1 == 1)
+			if (bufnum == curbuf)
+				break
+			elseif bufexists(bufnum) && (getbufvar(bufnum, '&buftype') !=# 'terminal')
+				execute ":buffer ". bufnum
+				break
+			else
+				let bufnum = bufnum - 1
+			endif
+			if (bufnum =< 1)
+				let bufnum = bufcount
+			endif
+		endwhile
+	endif
+endfun
+
+fun OpenTerm()
+	if (getbufvar('%', '&buftype') !=# 'terminal')
+		let start_var = bufnr(bufname(0))
+		let bufcount = bufnr(bufname(bufnr("$")))
+		let loopend = bufcount + 1
+		while(1 == 1)
+			if  bufexists(start_var) && (getbufvar(start_var, '&buftype') ==# 'terminal')
+				execute "vert sb" . start_var
+				set winwidth=110
+				break
+			endif
+			if (start_var == loopend)
+					execute "vert term"
+					set winwidth=110
+				break
+			endif
+			let start_var = start_var + 1
+		endwhile
+	else
+		close
+	endif
+endfun
+
+fun ExecCurFile()
+	exec 'vert term'
+	call term_sendkeys("%", "\clear" . "\<CR>")
+	"add more file types here if neeeded
+	call term_sendkeys("%", "\python3 " . expand('#:p'))
+	call term_sendkeys("%",  "\<CR>")
+endfun
+
+fun ExecFile(filename)
+	let argname = a:filename
+	"add more file types here if neeeded
+	if filereadable(argname)
+		exec 'vert term'
+		call term_sendkeys("%", "\clear" . "\<CR>")
+		call term_sendkeys("%", "\python3 " . argname)
+		call term_sendkeys("%",  "\<CR>")
+	else
+		echo "NOT A VALID FILE"
+	endif
+endfun
+
+
+fun TerminalForward()
+	let a = term_list()
+	let c = 0
+	if (len(a) != 1)
+		for i in a
+			let c = i
+			if (bufnr(c) != bufnr("%"))
+				execute ":buffer ". c
+				break
+			endif
+		endfor
+	endif
+endfun
+
+fun TerminalBackward()
+	let a = reverse(term_list())
+	let c = 0
+	if (len(a) != 1)
+		for i in a
+			let c = i
+			if (bufnr(c) != bufnr("%"))
+				execute ":buffer ". c
+				break
+			endif
+		endfor
+	endif
+endfun
+
+
+fun Quit()
+	if (len(getbufinfo()) == 1) && len(term_list()) == 0
+		q!
+	elseif (getbufvar("%", "&buftype") ==# 'terminal') && len(getbufinfo()) > 1
+		bw!
+	elseif (len(getbufinfo()) == 1)
+		q!
+	else
+		bw!
+	endif
+endfun
+
+fun SaveQuit()
+	if (len(getbufinfo()) == 1) && len(term_list()) == 0
+		wq!
+	elseif (getbufvar("%", "&buftype") ==# 'terminal') && len(getbufinfo()) > 1
+		w
+		bw!
+	elseif (len(getbufinfo()) == 1)
+		w
+		q!
+	else
+		w
+		bw!
+	endif
+endfun
+
+fun NavForward()
+	if (getbufvar("%", "&buftype") ==# 'terminal')
+		call TerminalForward()
+	else
+		call BufferForward()
+	endif
+endfun
+
+fun NavBackward()
+	if (getbufvar("%", "&buftype") ==# 'terminal')
+		call TerminalBackward()
+	else
+		call BufferBackward()
+	endif
+endfun
+
+function! ResizeSplits()
+	"later we can make logic for other stuff like for specific splits
+	set winwidth=115
+	wincmd=
+endfunction
+

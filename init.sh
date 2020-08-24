@@ -4,23 +4,7 @@
 #pip install --user --upgrade pynvim
 
 #download node js for the thing
-if [ ! -d ~/local ]; then
-	mkdir ~/local
-fi
-if [ ! -d ~/node-latest-install ]; then
-	mkdir ~/node-latest-install
-fi
-
-echo 'export PATH=$HOME/local/bin:$PATH' >> ~/.bashrc
-. ~/.bashrc
-cd ~/node-latest-install
-
-
-# curl -sL install-node.now.sh/lts | bash
-curl -L https://nodejs.org/download/release/latest/node-v14.8.0.tar.gz | tar xz --strip-components=1
-./configure --prefix=$HOME/local
-make install
-curl -L https://www.npmjs.com/install.sh | sh
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 
 
 #set vimrc path an for neovim
