@@ -142,14 +142,12 @@ autocmd FileType html set omnifunc+=htmlcomplete#CompleteTags
 autocmd FileType javascript set omnifunc+=javascriptcomplete#CompleteJS
 autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
 autocmd FileType python setlocal completeopt-=preview
-autocmd FileType python map <leader>e :call ExecCurFile()<CR>
 augroup FiletypeGroup
     autocmd!
     au BufNewFile,BufRead *.jsx set filetype=javascript.jsx
 augroup END
 augroup ReduceNoise
     autocmd!
-    " Automatically resize active split to 85 width
     autocmd BufEnter,BufNewFile,WinEnter,WinNew * :call ResizeSplits()
 augroup END
 autocmd FileType python set tabstop=4
@@ -162,34 +160,38 @@ autocmd FileType python set fileformat=unix
 autocmd BufLeave term://* startinsert
 autocmd BufEnter term://* startinsert
 
-" NORMAl MAPPINGS:
+" ADDING COMMAND:
 command -nargs=+ -complete=file Ex call ExecFile(<q-args>)
-nnoremap <nowait><Leader>" ciw""<Esc>P
-nnoremap <nowait><Leader>' ciw''<Esc>P
-nnoremap <Leader>"" ciW""<Esc>P
-nnoremap <Leader>'' ciW''<Esc>P
-nnoremap <Leader>d" ci""<Esc>P
-nnoremap <Leader>d' ci''<Esc>P
-nnoremap <Leader>d"" ciW""<Esc>P
-nnoremap <Leader>d'' ciW''<Esc>P
+" FIX SLOW MAPPINGS:
+nnoremap <nowait><leader>" ciw""<Esc>P<Esc>
+nnoremap <nowait><leader>' ciw''<Esc>P<Esc>
+nnoremap <nowait>d' di'hPl2x<Esc>
+nnoremap <nowait>d" di"hPl2x<Esc>
+nnoremap <nowait><leader>n :call NavForward()<CR>
+nnoremap <nowait><leader>p :call NavBackward()<CR>
+nnoremap <nowait><leader>f za
+nnoremap <nowait>dw dw
+nnoremap <nowait>dd dd
+nnoremap <nowait>yw yw
+nnoremap <nowait>cw cw
+" NORMAl MAPPINGS:
+autocmd FileType python map <leader>e :call ExecCurFile()<CR>
+nnoremap <nowait>W" ciW""<Esc>P
+nnoremap <nowait>W' ciW''<Esc>P
 nnoremap <leader>/ :call SearchDoc() <CR>
 nnoremap <space> :set hlsearch!<CR>
-nnoremap <nowait><leader>f za
 nnoremap qq :call Quit() <CR>
 nnoremap ww :silent! w! <CR>
 nnoremap wq :call SaveQuit()<CR>
-nnoremap dw :norm! deh <CR>
 nnoremap <leader>t :call OpenTerm()<CR>
-nnoremap <nowait><leader>n :call NavForward()<CR>
-nnoremap <nowait><leader>p :call NavBackward()<CR>
 nnoremap <leader>? :<C-u>execute "!pydoc3 " . expand("<cword>")<CR>
 " PLUGIN MAPPING:
 nmap <silent> gc <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gr <Plug>(coc-references)
 nnoremap <leader>rr :CocSearch <C-R>=expand("<cword>")<CR><CR>
-nmap <leader>pe <Plug>(ale_previous_wrap)
-nmap <leader>ne <Plug>(ale_next_wrap)
+nmap <nowait><leader>, <Plug>(ale_previous_wrap)
+nmap <nowait><leader>; <Plug>(ale_next_wrap)
 
 
 " INTRACTIVE MAPPINGS:
