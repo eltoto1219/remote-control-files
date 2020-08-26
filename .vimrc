@@ -160,20 +160,24 @@ autocmd FileType python set fileformat=unix
 autocmd BufLeave term://* startinsert
 autocmd BufEnter term://* startinsert
 
+" UNMAP THE FOLLOWING:
+nnoremap <nowait>dk <Esc>
+nnoremap <nowait>dj <Esc>
 " ADDING COMMAND:
 command -nargs=+ -complete=file Ex call ExecFile(<q-args>)
 " FIX SLOW MAPPINGS:
 nnoremap <nowait><leader>" ciw""<Esc>P<Esc>
 nnoremap <nowait><leader>' ciw''<Esc>P<Esc>
 nnoremap <nowait>d' di'hPl2x<Esc>
-nnoremap <nowait>d" di"hPl2x<Esc>
+nnoremap <nowait>d" di"hpl2x<esc>
 nnoremap <nowait><leader>n :call NavForward()<CR>
 nnoremap <nowait><leader>p :call NavBackward()<CR>
 nnoremap <nowait><leader>f za
 nnoremap <nowait>dw dw
-nnoremap <nowait>dd dd
 nnoremap <nowait>yw yw
 nnoremap <nowait>cw cw
+nnoremap <nowait>gu g~wi<Esc>
+nnoremap <nowait>gU g~Wi<Esc>
 " NORMAl MAPPINGS:
 autocmd FileType python map <leader>e :call ExecCurFile()<CR>
 nnoremap <nowait>W" ciW""<Esc>P
@@ -269,7 +273,7 @@ fun BufferForward()
 			else
 				let bufnum = bufnum + 1
 			endif
-			if (bufnum >= bufcount)
+			if (bufnum > bufcount+1)
 				let bufnum = 1
 			endif
 		endwhile
@@ -280,22 +284,18 @@ fun BufferBackward()
 	let curbuf = bufnr(bufname(bufnr("%")))
 	let bufnum = bufnr(bufname(bufnr("%")))
 	let bufcount = bufnr("$")
-	if (bufcount != 1) && (getbufvar("%", "&buftype") !=# 'terminal')
-		if (bufnum == bufcount) && (bufcount > 1)
-			let bufnum = bufnr(bufcount -1)
-		else
-			let bufnum = bufnr(bufnum -1)
-		endif
+	if (bufcount > 1) && (getbufvar("%", "&buftype") !=# 'terminal')
+		let bufnum = bufnum -1
 		while(1 == 1)
-			if (bufnum == curbuf)
+			if (bufnum == curbuf) && (bufnr(curbuf) != bufnr(bufcount))
 				break
-			elseif bufexists(bufnum) && (getbufvar(bufnum, '&buftype') !=# 'terminal')
+			elseif bufexists(bufnum) && (getbufvar(bufnum, '&buftype') !=# 'terminal') && (bufnum > 0)
 				execute ":buffer ". bufnum
 				break
 			else
 				let bufnum = bufnum - 1
 			endif
-			if (bufnum =< 1)
+			if (bufnum < 0)
 				let bufnum = bufcount
 			endif
 		endwhile
@@ -378,6 +378,7 @@ fun TerminalBackward()
 endfun
 
 
+" add no name condition for special quit
 fun Quit()
 	if (len(getbufinfo()) == 1) && len(term_list()) == 0
 		q!

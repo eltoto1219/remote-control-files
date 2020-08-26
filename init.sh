@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #download node js for the thing
-curl -sL install-node.now.sh | sh -s -- --prefix=$HOME
+curl -sL install-node.now.sh | bash
 source $HOME/.bashrc
 
 #get plugged
