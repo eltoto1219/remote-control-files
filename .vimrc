@@ -1,7 +1,6 @@
 "SET LEADER:
 let mapleader="w"
-
-"' PLUGINS:
+"PLUGINS:
 let g:ale_completion_enabled = 0
 let g:ale_disable_lsp=1
 call plug#begin('~/.vim/plugged')
@@ -13,7 +12,6 @@ Plug 'jremmen/vim-ripgrep'
 Plug 'tpope/vim-fugitive'
 Plug 'vim-utils/vim-man'
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'mbbill/undotree'
 Plug 'Yggdroot/indentLine'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -21,23 +19,30 @@ Plug 'ervandew/supertab'
 Plug 'lervag/vimtex'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'tmhedberg/SimpylFold'
+Plug 'junegunn/fzf.vim'
+Plug 'tpope/vim-commentary'
 call plug#end()
-
 " PLUGIN SETTING:
+let g:SuperTabDefaultCompletionType = "context"
+let g:SuperTabCompletionContexts = ['s:ContextText']
+let SuperTabContextTextOmniPrecedence = ['&omnifunc']
+
+"only if coc is the only auto complete
+"inoremap <silent><expr> <TAB>
+"      \ pumvisible() ? "\<C-n>" :
+"      \ <SID>check_back_space() ? "\<TAB>" :
+"      \ coc#refresh()
+"inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+
 let g:tex_flavor = 'latex'
-let g:coc_global_extensions = ['coc-tsserver' , 'coc-python', 'coc-yaml', 'coc-json', 'coc-css', 'coc-html']
+let g:coc_global_extensions = ['coc-tsserver' , 'coc-python', 'coc-snippets', 'coc-yaml', 'coc-json', 'coc-css', 'coc-html']
 let g:coc_disable_startup_warning=1
 let g:jedi#auto_vim_configuration = 0
 let g:jedi#auto_initialization = 0
 let g:jedi#completions_enabled = 0
-let g:jedi#show_call_signatures = 0
-let g:jedi#popup_on_dot = 0
-let g:jedi#goto_command = '<leader>c'
+let g:jedi#documentation_command = "K"
 let g:jedi#squelch_py_warning = 1
-let g:jedi#completions_command = '<tab>'
-let g:jedi#quikfix_window_height = 5
-let g:jedi#max_doc_height=10
-let g:jedi#winwidth=15
 let g:airline#extensions#coc#enabled=1
 let g:airline#extensions#ale#enabled=1
 let g:airline#extensions#tabline#enabled=1
@@ -57,7 +62,7 @@ let g:netrw_browse_g=2
 let g:netrw_banner=0
 let g:netrw_winsize=25
 let g:ale_completion_autoimport = 1
-let g:ale_fixers={'python': ['autopep8', 'yapf', 'black', 'isort'], 'javascript': ['prettier', 'eslint']}
+let g:ale_fixers={'python': ['autopep8', 'black', 'isort'], 'javascript': ['prettier', 'eslint']}
 let g:ale_fix_on_save=1
 let g:ale_fix_on_insert_leave=1
 let g:ale_linter_aliases={'jsx': ['css', 'javascript']}
@@ -91,8 +96,11 @@ else
   set signcolumn=yes
 endif
 
+
 " GENERAL:
 let skip_defaults_vim=1
+set completefunc=".,d"
+set cpt=".,d"
 set viminfo=""
 set tabstop=2
 set softtabstop=2
@@ -121,9 +129,9 @@ set encoding=utf-8
 set incsearch
 set hlsearch
 set sel=exclusive
-"set statusline^=%{coc#status()}
+set statusline^=%{coc#status()}
 set statusline+=%{StatusDiagnostic()}
-set statusline+=%{FugitiveStatusline()}
+" set statusline+=%{FugitiveStatusline()}
 set colorcolumn=88
 set background=dark
 colorscheme gruvbox
@@ -134,6 +142,9 @@ hi Terminal ctermbg=black ctermfg=white guibg=black guifg=blue
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip
 set wildmenu
 set wildmode=longest:full,full
+set winminheight=0
+set winminwidth=15
+"set ead=ver ea noea
 
 
 " AUTO Commands
@@ -153,7 +164,7 @@ augroup END
 autocmd FileType python set tabstop=4
 autocmd FileType python set softtabstop=4
 autocmd FileType python set shiftwidth=4
-autocmd FileType python set textwidth=79
+autocmd FileType not python set textwidth=88
 autocmd FileType python set expandtab
 autocmd FileType python set autoindent
 autocmd FileType python set fileformat=unix
@@ -174,28 +185,30 @@ nnoremap <nowait><leader>n :call NavForward()<CR>
 nnoremap <nowait><leader>p :call NavBackward()<CR>
 nnoremap <nowait><leader>f za
 nnoremap <nowait>dw dw
+nnoremap <nowait>d2w d2w
+nnoremap <nowait>d3w d3w
 nnoremap <nowait>yw yw
 nnoremap <nowait>cw cw
 nnoremap <nowait>gu g~wi<Esc>
 nnoremap <nowait>gU g~Wi<Esc>
 " NORMAl MAPPINGS:
+vnoremap <silent> # gc
 autocmd FileType python map <leader>e :call ExecCurFile()<CR>
 nnoremap <nowait>W" ciW""<Esc>P
 nnoremap <nowait>W' ciW''<Esc>P
-nnoremap <leader>/ :call SearchDoc() <CR>
+" map <leader>/ :call SearchDoc() <CR>
 nnoremap <space> :set hlsearch!<CR>
-nnoremap qq :call Quit() <CR>
+nnoremap qq :q! <CR>
 nnoremap ww :silent! w! <CR>
-nnoremap wq :call SaveQuit()<CR>
+nnoremap wq :call wq!<CR>
 nnoremap <leader>t :call OpenTerm()<CR>
-nnoremap <leader>? :<C-u>execute "!pydoc3 " . expand("<cword>")<CR>
+map <leader>/ :<C-u>execute "!pydoc3 " . expand("<cword>")<CR>
 " PLUGIN MAPPING:
-nmap <silent> gc <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gr <Plug>(coc-references)
-nnoremap <leader>rr :CocSearch <C-R>=expand("<cword>")<CR><CR>
-nmap <nowait><leader>, <Plug>(ale_previous_wrap)
-nmap <nowait><leader>; <Plug>(ale_next_wrap)
+map <silent> gd <Plug>(coc-definition)
+map <silent> gr <Plug>(coc-references)
+map <leader>rr :CocSearch <C-R>=expand("<cword>")<CR><CR>
+nmap <nowait><leader>[ <Plug>(ale_previous_wrap)
+nmap <nowait><leader>] <Plug>(ale_next_wrap)
 
 
 " INTRACTIVE MAPPINGS:
@@ -203,23 +216,21 @@ inoremap jk <Esc>
 
 " TERM MAPPINGS:
 tnoremap jk <C-\><C-n>
-tnoremap <leader>t <C-W>:close!<CR>
-tnoremap qq <C-D><CR>
-tnoremap <nowait><leader>k <C-W>:wincmd k<CR>
-tnoremap <nowait><leader>j <C-W>:wincmd j<CR>
+tnoremap <leader> <C-w>
+tnoremap <leader>t <C-W>:b! #<CR>
+tnoremap qq <C-W>:bw! <CR>
 tnoremap <nowait><leader>l <C-W>:wincmd l<CR>
 tnoremap <nowait><leader>h <C-W>:wincmd h<CR>
 tnoremap <leader>n <C-w>:call TerminalForward()<CR>
 tnoremap <leader>p <C-w>:call TerminalBackward()<CR>
-nnoremap <leader>h :wincmd h <bar>:silent! set autoread <CR>
-nnoremap <leader>j :wincmd j <bar>:silent! set autoread <CR>
-nnoremap <leader>k :wincmd k <bar> :silent! set autoread <CR>
-nnoremap <leader>l :wincmd l <bar> :silent! set autoread <CR>
+nnoremap <leader>h :wincmd h <bar> :w <bar>:silent! set autoread <CR>
+nnoremap <leader>j :wincmd j <bar> :w <bar>:silent! set autoread <CR>
+nnoremap <leader>k :wincmd k <bar> :w <bar>:silent! set autoread <CR>
+nnoremap <leader>l :wincmd l <bar> :w <bar>:silent! set autoread <CR>
 nnoremap <leader>= <C-W>:resize +5 <CR>
 nnoremap <leader>- <C-W>:resize -5 <CR>
 
 " MISC PLUGIN:
-" Use <c-space> to trigger completion.
 if has('nvim')
   inoremap <silent><expr> <c-space> coc#refresh()
 else
@@ -309,15 +320,15 @@ fun OpenTerm()
 		let loopend = bufcount + 1
 		while(1 == 1)
 			if  bufexists(start_var) && (getbufvar(start_var, '&buftype') ==# 'terminal')
-				execute "vert sb" . start_var
 				wincmd=
-				exe "vert resize " . (winwidth(0) * 3/2)
+				execute "b" . start_var
 				break
 			endif
 			if (start_var == loopend)
-					execute "vert term"
 					wincmd=
-					exe "vert resize " . (winwidth(0) * 3/2)
+					term ++curwin
+					" exe "vert resize " . (winwidth(0) * 1000)
+					" exe "resize " . (winheight(0) * 1000)
 				break
 			endif
 			let start_var = start_var + 1
@@ -328,7 +339,7 @@ fun OpenTerm()
 endfun
 
 fun ExecCurFile()
-	exec 'vert term'
+	exec 'term ++curwin'
 	call term_sendkeys("%", "\clear" . "\<CR>")
 	"add more file types here if neeeded
 	call term_sendkeys("%", "\python3 " . expand('#:p'))
@@ -339,7 +350,7 @@ fun ExecFile(filename)
 	let argname = a:filename
 	"add more file types here if neeeded
 	if filereadable(argname)
-		exec 'vert term'
+		exec 'term ++curwin'
 		call term_sendkeys("%", "\clear" . "\<CR>")
 		call term_sendkeys("%", "\python3 " . argname)
 		call term_sendkeys("%",  "\<CR>")
@@ -380,19 +391,22 @@ endfun
 
 " add no name condition for special quit
 fun Quit()
-	if (len(getbufinfo()) == 1) && len(term_list()) == 0
+	if (getbufvar("%", "&buftype") ==# 'nofile')
+		q!
+	elseif (len(getbufinfo()) == 1) && len(term_list()) == 0
 		q!
 	elseif (getbufvar("%", "&buftype") ==# 'terminal') && len(getbufinfo()) > 1
 		bw!
-	elseif (len(getbufinfo()) == 1)
 		q!
 	else
-		bw!
+		q!
 	endif
 endfun
 
 fun SaveQuit()
-	if (len(getbufinfo()) == 1) && len(term_list()) == 0
+	if (getbufvar("%", "&buftype") ==# 'nofile')
+		q!
+	elseif (len(getbufinfo()) == 1) && len(term_list()) == 0
 		wq!
 	elseif (getbufvar("%", "&buftype") ==# 'terminal') && len(getbufinfo()) > 1
 		w
@@ -400,10 +414,8 @@ fun SaveQuit()
 	elseif (len(getbufinfo()) == 1)
 		w
 		q!
-	else
-		w
-		bw!
 	endif
+	q!
 endfun
 
 fun NavForward()
@@ -424,7 +436,8 @@ endfun
 
 function! ResizeSplits()
 	"later we can make logic for other stuff like for specific splits
-	wincmd=
-	exe "vert resize " . (winwidth(0) * 3/2)
+  wincmd=
+	exe "vert resize " . (winwidth(0) * 1000)
 endfunction
+"only if coc is the only auto complete
 
