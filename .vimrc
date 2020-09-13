@@ -26,15 +26,6 @@ call plug#end()
 let g:SuperTabDefaultCompletionType = "context"
 let g:SuperTabCompletionContexts = ['s:ContextText']
 let SuperTabContextTextOmniPrecedence = ['&omnifunc']
-
-"only if coc is the only auto complete
-"inoremap <silent><expr> <TAB>
-"      \ pumvisible() ? "\<C-n>" :
-"      \ <SID>check_back_space() ? "\<TAB>" :
-"      \ coc#refresh()
-"inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-
 let g:tex_flavor = 'latex'
 let g:coc_global_extensions = ['coc-tsserver' , 'coc-python', 'coc-snippets', 'coc-yaml', 'coc-json', 'coc-css', 'coc-html']
 let g:coc_disable_startup_warning=1
@@ -70,7 +61,7 @@ let g:ale_linters={'python': ['flake8'], 'jsx': ['css', 'javascript'], 'javascri
 ":help ale-fix
 let g:ale_lint_on_text_changed='never'
 let g:ale_lint_on_insert_leave=1
-let g:ale_linters_explicit=0
+let g:ale_linters_explicit=1
 let b:ale_warn_about_trailing_whitespace=0
 let g:ale_sign_column_always=1
 let g:ale_set_quickfix=1
@@ -131,7 +122,7 @@ set hlsearch
 set sel=exclusive
 set statusline^=%{coc#status()}
 set statusline+=%{StatusDiagnostic()}
-" set statusline+=%{FugitiveStatusline()}
+set statusline+=%{FugitiveStatusline()}
 set colorcolumn=88
 set background=dark
 colorscheme gruvbox
@@ -144,8 +135,6 @@ set wildmenu
 set wildmode=longest:full,full
 set winminheight=0
 set winminwidth=15
-"set ead=ver ea noea
-
 
 " AUTO Commands
 autocmd FileType css set omnifunc+=csscomplete#CompleteCSS
@@ -161,13 +150,18 @@ augroup ReduceNoise
     autocmd!
     autocmd BufEnter,BufNewFile,WinEnter,WinNew * :call ResizeSplits()
 augroup END
-autocmd FileType python set tabstop=4
-autocmd FileType python set softtabstop=4
-autocmd FileType python set shiftwidth=4
-autocmd FileType not python set textwidth=88
-autocmd FileType python set expandtab
-autocmd FileType python set autoindent
-autocmd FileType python set fileformat=unix
+
+" for html/rb/json/yaml files, 2 spaces
+autocmd Filetype html setlocal ts=2 sw=2 expandtab
+autocmd Filetype ruby setlocal ts=2 sw=2 expandtab
+autocmd Filetype json setlocal ts=2 sw=2 expandtab
+autocmd Filetype yaml setlocal ts=2 sw=2 expandtab
+
+" for js/coffee/jade/python files, 4 spaces
+autocmd Filetype python setlocal ts=4 sw=4 sts=4 textwidth=88 expandtab autoindent, fileformat=unix
+autocmd Filetype javascript setlocal ts=4 sw=4 sts=4 textwidth=88 expandtab autoindent, fileformat=unix
+autocmd Filetype cofeescript setlocal ts=4 sw=4 sts=4 textwidth=88 expandtab autoindent, fileformat=unix
+autocmd Filetype jade setlocal ts=4 sw=4 sts=4 textwidth=88 expandtab autoindent, fileformat=unix
 autocmd BufLeave term://* startinsert
 autocmd BufEnter term://* startinsert
 
@@ -187,21 +181,21 @@ nnoremap <nowait><leader>f za
 nnoremap <nowait>dw dw
 nnoremap <nowait>d2w d2w
 nnoremap <nowait>d3w d3w
+nnoremap <nowait>d4w d4w
 nnoremap <nowait>yw yw
 nnoremap <nowait>cw cw
 nnoremap <nowait>gu g~wi<Esc>
 nnoremap <nowait>gU g~Wi<Esc>
 " NORMAl MAPPINGS:
-vnoremap <silent> # gc
 autocmd FileType python map <leader>e :call ExecCurFile()<CR>
 nnoremap <nowait>W" ciW""<Esc>P
 nnoremap <nowait>W' ciW''<Esc>P
 " map <leader>/ :call SearchDoc() <CR>
 nnoremap <space> :set hlsearch!<CR>
-nnoremap qq :q! <CR>
+nnoremap qq :silent call Quit() <CR>
 nnoremap ww :silent! w! <CR>
-nnoremap wq :call wq!<CR>
-nnoremap <leader>t :call OpenTerm()<CR>
+nnoremap wq :silent call SaveQuit() <CR>
+nnoremap <leader>t :w <bar> :call OpenTerm()<CR>
 map <leader>/ :<C-u>execute "!pydoc3 " . expand("<cword>")<CR>
 " PLUGIN MAPPING:
 map <silent> gd <Plug>(coc-definition)
@@ -216,8 +210,9 @@ inoremap jk <Esc>
 
 " TERM MAPPINGS:
 tnoremap jk <C-\><C-n>
-tnoremap <leader> <C-w>
+tnoremap ; <C-w>:
 tnoremap <leader>t <C-W>:b! #<CR>
+tnoremap <leader>1 <C-W>:b1 #<CR>
 tnoremap qq <C-W>:bw! <CR>
 tnoremap <nowait><leader>l <C-W>:wincmd l<CR>
 tnoremap <nowait><leader>h <C-W>:wincmd h<CR>
@@ -266,80 +261,58 @@ endfun
 
 
 fun BufferForward()
-	let curbuf = bufnr(bufname(bufnr("%")))
-	let bufnum = bufnr(bufname(bufnr("%")))
+	let curbuf = bufnr("%")
+	let term_list = term_list()
 	let bufcount = bufnr("$")
-	if (bufcount != 1) && (getbufvar("%", "&buftype") !=# 'terminal')
-		if (bufnum == bufcount) && (bufcount > 1)
-			let bufnum = bufnr(bufname(1))
-		else
-			let bufnum = bufnum + 1
-		endif
-		while(1 == 1)
-			if (bufnum == curbuf)
+	if curbuf == bufcount
+		bfirst
+	else
+		for i in getbufinfo()
+			let somenum = i.bufnr
+			let somename = i.name
+			if index(term_list, somenum) != 0 && (somenum != "") && (curbuf < somenum)
+				execute ":buffer ". somenum
 				break
-			elseif bufexists(bufnum) && (getbufvar(bufnum, '&buftype') !=# 'terminal')
-				execute ":buffer ". bufnum
+			elseif somenum == bufcount
+				bfirst
 				break
-			else
-				let bufnum = bufnum + 1
 			endif
-			if (bufnum > bufcount+1)
-				let bufnum = 1
-			endif
-		endwhile
+		endfor
 	endif
 endfun
 
 fun BufferBackward()
-	let curbuf = bufnr(bufname(bufnr("%")))
-	let bufnum = bufnr(bufname(bufnr("%")))
-	let bufcount = bufnr("$")
-	if (bufcount > 1) && (getbufvar("%", "&buftype") !=# 'terminal')
-		let bufnum = bufnum -1
-		while(1 == 1)
-			if (bufnum == curbuf) && (bufnr(curbuf) != bufnr(bufcount))
-				break
-			elseif bufexists(bufnum) && (getbufvar(bufnum, '&buftype') !=# 'terminal') && (bufnum > 0)
-				execute ":buffer ". bufnum
-				break
-			else
-				let bufnum = bufnum - 1
-			endif
-			if (bufnum < 0)
-				let bufnum = bufcount
-			endif
-		endwhile
+	let curbuf = bufnr("%")
+	let term_list = term_list()
+	let buffirst = getbufinfo()[0].bufnr
+	if buffirst == curbuf
+		let curbuf = 9999
 	endif
+	for i in reverse(getbufinfo())
+		let somenum = i.bufnr
+		let somename = i.name
+		if (index(term_list, somenum) != 0 && (somenum != "")) && (curbuf > somenum)
+				execute ":buffer ". somenum
+				break
+		endif
+	endfor
 endfun
 
 fun OpenTerm()
-	if (getbufvar('%', '&buftype') !=# 'terminal')
-		let start_var = bufnr(bufname(0))
-		let bufcount = bufnr(bufname(bufnr("$")))
-		let loopend = bufcount + 1
-		while(1 == 1)
-			if  bufexists(start_var) && (getbufvar(start_var, '&buftype') ==# 'terminal')
-				wincmd=
-				execute "b" . start_var
-				break
-			endif
-			if (start_var == loopend)
-					wincmd=
-					term ++curwin
-					" exe "vert resize " . (winwidth(0) * 1000)
-					" exe "resize " . (winheight(0) * 1000)
-				break
-			endif
-			let start_var = start_var + 1
-		endwhile
+	if (getbufvar('%', '&buftype') !=# 'terminal') && (len(term_list()) > 0)
+		for x in term_list()
+			execute "b" . x
+			break
+		endfor
 	else
-		close
+			wincmd=
+			term ++curwin
 	endif
 endfun
 
 fun ExecCurFile()
-	exec 'term ++curwin'
+	" exec 'term ++curwin'
+	call OpenTerm()
 	call term_sendkeys("%", "\clear" . "\<CR>")
 	"add more file types here if neeeded
 	call term_sendkeys("%", "\python3 " . expand('#:p'))
@@ -350,7 +323,8 @@ fun ExecFile(filename)
 	let argname = a:filename
 	"add more file types here if neeeded
 	if filereadable(argname)
-		exec 'term ++curwin'
+		call OpenTerm()
+		"exec 'term ++curwin'
 		call term_sendkeys("%", "\clear" . "\<CR>")
 		call term_sendkeys("%", "\python3 " . argname)
 		call term_sendkeys("%",  "\<CR>")
@@ -391,31 +365,25 @@ endfun
 
 " add no name condition for special quit
 fun Quit()
-	if (getbufvar("%", "&buftype") ==# 'nofile')
-		q!
-	elseif (len(getbufinfo()) == 1) && len(term_list()) == 0
-		q!
-	elseif (getbufvar("%", "&buftype") ==# 'terminal') && len(getbufinfo()) > 1
-		bw!
-		q!
+	if bufname("%") == ''
+		silent q!
+	elseif (len(getbufinfo()) == 1)
+		silent q!
+		silent bw!
 	else
-		q!
+		silent bw!
 	endif
 endfun
 
 fun SaveQuit()
-	if (getbufvar("%", "&buftype") ==# 'nofile')
-		q!
-	elseif (len(getbufinfo()) == 1) && len(term_list()) == 0
-		wq!
-	elseif (getbufvar("%", "&buftype") ==# 'terminal') && len(getbufinfo()) > 1
-		w
-		bw!
+	if bufname("%") == ''
+		silent q!
 	elseif (len(getbufinfo()) == 1)
-		w
-		q!
+		silent wq!
+	else
+		silent w
+		silent bw!
 	endif
-	q!
 endfun
 
 fun NavForward()

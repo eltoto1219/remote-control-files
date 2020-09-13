@@ -4,11 +4,11 @@
 		"envs",
 		".pyenv",
 		".direnv",
-		"venv"
+		"venv",
+    "mlnv"
 	],
-  "suggest.detailField": "menu",
   "suggest.removeDuplicateItems": true,
-  "suggest.echodocSupport": true,
+  "suggest.echodocSupport": false,
   "suggest.autoTrigger": "always",
   "suggest.triggerCompletionWait": 30,
   "suggest.minTriggerInputLength": 0,
