@@ -19,6 +19,5 @@ source ~/.bashrc
 
 vim +'CocInstall coc-json coc-tsserver coc-yaml coc-python coc-css coc-yaml coc-snippets' +qa
 
-#make sure pyvim is installed (we want those juicy python3 features)
-cp $HOME/remote-control-files/setup.cfg $HOME/setup.cfg
-cp $HOME/remote-control-files/coc-settings.json $HOME/.vim/coc-settings.json
+# cp $HOME/remote-control-files/setup.cfg $HOME/setup.cfg
+# cp $HOME/remote-control-files/coc-settings.json $HOME/.vim/coc-settings.json

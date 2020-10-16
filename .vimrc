@@ -4,6 +4,9 @@ let mapleader="w"
 let g:ale_completion_enabled = 0
 let g:ale_disable_lsp=1
 call plug#begin('~/.vim/plugged')
+Plug 'alvan/vim-closetag'
+Plug 'yuezk/vim-js'
+Plug 'maxmellon/vim-jsx-pretty'
 Plug 'davidhalter/jedi-vim'
 Plug 'vim-python/python-syntax'
 Plug 'dense-analysis/ale'
@@ -23,11 +26,14 @@ Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-commentary'
 call plug#end()
 " PLUGIN SETTING:
+let g:SuperTabClosePreviewOnPopupClose=0
+autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+let g:jedi#auto_close_doc=1
 let g:SuperTabDefaultCompletionType = "context"
 let g:SuperTabCompletionContexts = ['s:ContextText']
 let SuperTabContextTextOmniPrecedence = ['&omnifunc']
 let g:tex_flavor = 'latex'
-let g:coc_global_extensions = ['coc-tsserver' , 'coc-python', 'coc-snippets', 'coc-yaml', 'coc-json', 'coc-css', 'coc-html']
+let g:coc_global_extensions = ['coc-tsserver' , 'coc-python', 'coc-yaml', 'coc-json', 'coc-css', 'coc-html']
 let g:coc_disable_startup_warning=1
 let g:jedi#auto_vim_configuration = 0
 let g:jedi#auto_initialization = 0
@@ -57,11 +63,11 @@ let g:ale_fixers={'python': ['autopep8', 'black', 'isort'], 'javascript': ['pret
 let g:ale_fix_on_save=1
 let g:ale_fix_on_insert_leave=1
 let g:ale_linter_aliases={'jsx': ['css', 'javascript']}
-let g:ale_linters={'python': ['flake8'], 'jsx': ['css', 'javascript'], 'javascript': ['css', 'javascript']}
+let g:ale_linters={'python': ['flake8'], 'jsx': ['html', 'css', 'javascript'], 'javascript': ['css', 'javascript']}
 ":help ale-fix
-let g:ale_lint_on_text_changed='never'
+"let g:ale_lint_on_text_changed='never'
 let g:ale_lint_on_insert_leave=1
-let g:ale_linters_explicit=1
+"let g:ale_linters_explicit=1
 let b:ale_warn_about_trailing_whitespace=0
 let g:ale_sign_column_always=1
 let g:ale_set_quickfix=1
@@ -71,6 +77,7 @@ let g:ale_sign_error='!'
 let g:ale_sign_warning='?'
 let g:gruvbox_invert_selection = '0'
 let g:gruvbox_contrast_dark = 'hard'
+let g:closetag_filenames = '*.html,*.xhtml,*.phtml, *jsx, *js'
 if executable('rg')
     let g:rg_derive_root='true'
     let g:rg_highlight="true"
@@ -158,10 +165,10 @@ autocmd Filetype json setlocal ts=2 sw=2 expandtab
 autocmd Filetype yaml setlocal ts=2 sw=2 expandtab
 
 " for js/coffee/jade/python files, 4 spaces
-autocmd Filetype python setlocal ts=4 sw=4 sts=4 textwidth=88 expandtab autoindent, fileformat=unix
-autocmd Filetype javascript setlocal ts=4 sw=4 sts=4 textwidth=88 expandtab autoindent, fileformat=unix
-autocmd Filetype cofeescript setlocal ts=4 sw=4 sts=4 textwidth=88 expandtab autoindent, fileformat=unix
-autocmd Filetype jade setlocal ts=4 sw=4 sts=4 textwidth=88 expandtab autoindent, fileformat=unix
+autocmd Filetype python setlocal ts=4 sw=4 sts=4 textwidth=119 expandtab autoindent fileformat=unix
+autocmd Filetype javascript setlocal ts=4 sw=4 sts=4 textwidth=119 expandtab autoindent fileformat=unix
+autocmd Filetype cofeescript setlocal ts=4 sw=4 sts=4 textwidth=119 expandtab autoindent fileformat=unix
+autocmd Filetype jade setlocal ts=4 sw=4 sts=4 textwidth=119 expandtab autoindent fileformat=unix
 autocmd BufLeave term://* startinsert
 autocmd BufEnter term://* startinsert
 
@@ -171,6 +178,7 @@ nnoremap <nowait>dj <Esc>
 " ADDING COMMAND:
 command -nargs=+ -complete=file Ex call ExecFile(<q-args>)
 " FIX SLOW MAPPINGS:
+iabbrev </ </<C-X><C-O>
 nnoremap <nowait><leader>" ciw""<Esc>P<Esc>
 nnoremap <nowait><leader>' ciw''<Esc>P<Esc>
 nnoremap <nowait>d' di'hPl2x<Esc>
@@ -206,7 +214,7 @@ nmap <nowait><leader>] <Plug>(ale_next_wrap)
 
 
 " INTRACTIVE MAPPINGS:
-inoremap jk <Esc>
+inoremap jk <Esc>l
 
 " TERM MAPPINGS:
 tnoremap jk <C-\><C-n>
@@ -270,7 +278,7 @@ fun BufferForward()
 		for i in getbufinfo()
 			let somenum = i.bufnr
 			let somename = i.name
-			if index(term_list, somenum) != 0 && (somenum != "") && (curbuf < somenum)
+			if index(term_list, somenum) != 0 && (somenum != "") && (curbuf < somenum) && (getbufvar('%', '&buftype') !=# 'scratch')
 				execute ":buffer ". somenum
 				break
 			elseif somenum == bufcount
@@ -291,7 +299,7 @@ fun BufferBackward()
 	for i in reverse(getbufinfo())
 		let somenum = i.bufnr
 		let somename = i.name
-		if (index(term_list, somenum) != 0 && (somenum != "")) && (curbuf > somenum)
+		if (index(term_list, somenum) != 0 && (somenum != "")) && (curbuf > somenum) && (getbufvar('%', '&buftype') !=# 'scratch')
 				execute ":buffer ". somenum
 				break
 		endif
