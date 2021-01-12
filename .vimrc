@@ -25,6 +25,7 @@ Plug 'tmhedberg/SimpylFold'
 Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-commentary'
 call plug#end()
+
 " PLUGIN SETTING:
 let g:SuperTabClosePreviewOnPopupClose=0
 autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
@@ -99,6 +100,7 @@ endif
 let skip_defaults_vim=1
 set completefunc=".,d"
 set cpt=".,d"
+set completeopt=menuone,noinsert,noselect
 set viminfo=""
 set tabstop=2
 set softtabstop=2
@@ -107,6 +109,8 @@ set smartindent
 set foldmethod=indent
 set foldlevel=99
 set backspace=2
+set termguicolors
+set scrolloff=8
 syntax enable
 syntax on
 set t_Co=256
@@ -130,13 +134,14 @@ set sel=exclusive
 set statusline^=%{coc#status()}
 set statusline+=%{StatusDiagnostic()}
 set statusline+=%{FugitiveStatusline()}
-set colorcolumn=88
 set background=dark
+set shortmess+=c
 colorscheme gruvbox
-hi ColorColumn ctermbg=819
+" hi ColorColumn ctermbg=819
 hi StatusLine ctermbg=819
 let python_highlight_all = 1
 hi Terminal ctermbg=black ctermfg=white guibg=black guifg=blue
+set colorcolumn=88
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip
 set wildmenu
 set wildmode=longest:full,full
