@@ -109,7 +109,7 @@ set smartindent
 set foldmethod=indent
 set foldlevel=99
 set backspace=2
-set termguicolors
+" set termguicolors
 set scrolloff=8
 syntax enable
 syntax on
