@@ -65,11 +65,13 @@ let g:ale_fix_on_save=1
 let g:ale_fix_on_insert_leave=1
 let g:ale_linter_aliases={'jsx': ['css', 'javascript']}
 let g:ale_linters={'python': ['flake8'], 'jsx': ['html', 'css', 'javascript'], 'javascript': ['css', 'javascript']}
+let g:ale_python_flake8_options = '--max-line-length=88'
 ":help ale-fix
 "let g:ale_lint_on_text_changed='never'
 let g:ale_lint_on_insert_leave=1
 "let g:ale_linters_explicit=1
 let b:ale_warn_about_trailing_whitespace=0
+" let b:coc_suggest_disable = 1
 let g:ale_sign_column_always=1
 let g:ale_set_quickfix=1
 let g:ale_set_loclist=0
@@ -147,13 +149,19 @@ set wildmenu
 set wildmode=longest:full,full
 set winminheight=0
 set winminwidth=15
+" set completeopt-=preview
+"
+
+" inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+" inoremap <expr> <CR> pumvisible() ? "\<C-n>" : "\<CR>"
+" inoremap <expr> <S-CR> pumvisible() ? "\<C-p>" : "\<CR>"
 
 " AUTO Commands
 autocmd FileType css set omnifunc+=csscomplete#CompleteCSS
 autocmd FileType html set omnifunc+=htmlcomplete#CompleteTags
 autocmd FileType javascript set omnifunc+=javascriptcomplete#CompleteJS
 autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
-autocmd FileType python setlocal completeopt-=preview
+" autocmd FileType python setlocal completeopt-=preview
 augroup FiletypeGroup
     autocmd!
     au BufNewFile,BufRead *.jsx set filetype=javascript.jsx
