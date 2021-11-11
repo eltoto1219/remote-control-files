@@ -66,6 +66,7 @@ let g:ale_fix_on_insert_leave=1
 let g:ale_linter_aliases={'jsx': ['css', 'javascript']}
 let g:ale_linters={'python': ['flake8'], 'jsx': ['html', 'css', 'javascript'], 'javascript': ['css', 'javascript']}
 let g:ale_python_flake8_options = '--max-line-length=88'
+let g:ale_python_flake8_options = '--ignore=E203,E741,E501'
 ":help ale-fix
 "let g:ale_lint_on_text_changed='never'
 let g:ale_lint_on_insert_leave=1
@@ -161,7 +162,7 @@ autocmd FileType css set omnifunc+=csscomplete#CompleteCSS
 autocmd FileType html set omnifunc+=htmlcomplete#CompleteTags
 autocmd FileType javascript set omnifunc+=javascriptcomplete#CompleteJS
 autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
-" autocmd FileType python setlocal completeopt-=preview
+autocmd FileType python setlocal completeopt-=preview
 augroup FiletypeGroup
     autocmd!
     au BufNewFile,BufRead *.jsx set filetype=javascript.jsx

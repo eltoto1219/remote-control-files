@@ -20,5 +20,4 @@ vim +'CocInstall coc-json coc-tsserver coc-yaml coc-python coc-css coc-yaml coc-
 
 cp setup.cfg $HOME/setup.cfg
 cp coc-settings.json $HOME/.vim/coc-settings.json
-#cp .bashrc $HOME/.bashrc
-#cp .bash_profile $HOME/.bash_profile
+
