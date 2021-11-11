@@ -2,7 +2,7 @@
 
 sudo chown -R ubuntu /opt
 mkdir /opt/cache
-cd /opt/kvp-copynet && git clone https://dev.jde.cloud.verisk.com/Antonio.Mendoza/kvp-copynet.git
+cd /opt/ && git clone https://dev.jde.cloud.verisk.com/Antonio.Mendoza/kvp-copynet.git
 source activate pytorch_latest_p37
 pip install --upgrade pip
 pip install strsim
