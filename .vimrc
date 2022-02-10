@@ -129,7 +129,7 @@ set nobackup
 set undofile
 set undodir=~/.vim/undodir
 set mouse=
-set clipboard=unnamedplus
+" set clipboard=unnamedplus
 set encoding=utf-8
 set incsearch
 set hlsearch
