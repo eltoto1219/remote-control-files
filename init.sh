@@ -15,16 +15,13 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 #Run Plug Install
 vim +'PlugInstall' +qa
 vim +'PlugUpdate' +qa
-
 #vim +'CocInstall coc-json coc-tsserver coc-yaml coc-python coc-css coc-yaml coc-snippets' +qa
-
 #cp coc-settings.json $HOME/.vim/coc-settings.json
-
 
 # stuff to add to .profile
 
 echo "" >> ~/.profile
-echo "==== AUTO ADDED ===" >> ~/.profile
+echo "#==== AUTO ADDED ===" >> ~/.profile
 echo "" >> ~/.profile
 cat .profile >> ~/.profile
 
