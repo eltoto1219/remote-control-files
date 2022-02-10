@@ -20,7 +20,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'ervandew/supertab'
 Plug 'lervag/vimtex'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+"Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'tmhedberg/SimpylFold'
 Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-commentary'
@@ -34,8 +34,8 @@ let g:SuperTabDefaultCompletionType = "context"
 let g:SuperTabCompletionContexts = ['s:ContextText']
 let SuperTabContextTextOmniPrecedence = ['&omnifunc']
 let g:tex_flavor = 'latex'
-let g:coc_global_extensions = ['coc-tsserver' , 'coc-python', 'coc-yaml', 'coc-json', 'coc-css', 'coc-html']
-let g:coc_disable_startup_warning=1
+"let g:coc_global_extensions = ['coc-tsserver' , 'coc-python', 'coc-yaml', 'coc-json', 'coc-css', 'coc-html']
+"let g:coc_disable_startup_warning=1
 let g:jedi#auto_vim_configuration = 0
 let g:jedi#auto_initialization = 0
 let g:jedi#completions_enabled = 0
@@ -134,7 +134,7 @@ set encoding=utf-8
 set incsearch
 set hlsearch
 set sel=exclusive
-set statusline^=%{coc#status()}
+"set statusline^=%{coc#status()}
 set statusline+=%{StatusDiagnostic()}
 set statusline+=%{FugitiveStatusline()}
 set background=dark
@@ -220,9 +220,9 @@ nnoremap wq :silent call SaveQuit() <CR>
 nnoremap <leader>t :w <bar> :call OpenTerm()<CR>
 map <leader>/ :<C-u>execute "!pydoc3 " . expand("<cword>")<CR>
 " PLUGIN MAPPING:
-map <silent> gd <Plug>(coc-definition)
-map <silent> gr <Plug>(coc-references)
-map <leader>rr :CocSearch <C-R>=expand("<cword>")<CR><CR>
+"map <silent> gd <Plug>(coc-definition)
+"map <silent> gr <Plug>(coc-references)
+"map <leader>rr :CocSearch <C-R>=expand("<cword>")<CR><CR>
 nmap <nowait><leader>[ <Plug>(ale_previous_wrap)
 nmap <nowait><leader>] <Plug>(ale_next_wrap)
 
@@ -248,11 +248,11 @@ nnoremap <leader>= <C-W>:resize +5 <CR>
 nnoremap <leader>- <C-W>:resize -5 <CR>
 
 " MISC PLUGIN:
-if has('nvim')
-  inoremap <silent><expr> <c-space> coc#refresh()
-else
-  inoremap <silent><expr> <c-@> coc#refresh()
-endif
+"if has('nvim')
+"  inoremap <silent><expr> <c-space> coc#refresh()
+"else
+"  inoremap <silent><expr> <c-@> coc#refresh()
+"endif
 
 if exists('*complete_info')
   inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"

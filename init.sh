@@ -16,8 +16,19 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 vim +'PlugInstall' +qa
 vim +'PlugUpdate' +qa
 
-vim +'CocInstall coc-json coc-tsserver coc-yaml coc-python coc-css coc-yaml coc-snippets' +qa
+#vim +'CocInstall coc-json coc-tsserver coc-yaml coc-python coc-css coc-yaml coc-snippets' +qa
 
-cp setup.cfg $HOME/setup.cfg
-cp coc-settings.json $HOME/.vim/coc-settings.json
+#cp setup.cfg $HOME/setup.cfg
+#cp coc-settings.json $HOME/.vim/coc-settings.json
 
+
+# stuff to add to .profile
+
+echo "" >> ~/.profile
+echo "==== AUTO ADDED ===" >> ~/.profile
+echo "" >> ~/.profile
+./profile >> ~.profile
+
+# move tmux config
+
+mv ./.tmux.conf ~/
