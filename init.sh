@@ -26,7 +26,7 @@ vim +'PlugUpdate' +qa
 echo "" >> ~/.profile
 echo "==== AUTO ADDED ===" >> ~/.profile
 echo "" >> ~/.profile
-cat .profile >> ~.profile
+cat .profile >> ~/.profile
 
 # move tmux config
 
