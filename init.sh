@@ -26,10 +26,10 @@ vim +'PlugUpdate' +qa
 echo "" >> ~/.profile
 echo "==== AUTO ADDED ===" >> ~/.profile
 echo "" >> ~/.profile
-cat ./profile >> ~.profile
+cat .profile >> ~.profile
 
 # move tmux config
 
-cp ./.tmux.conf ~/
+cp .tmux.conf ~/
 cp setup.cfg ~/
 cp .hushlogin ~/
