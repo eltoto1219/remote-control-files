@@ -24,6 +24,7 @@ echo "" >> ~/.profile
 echo "#==== AUTO ADDED ===" >> ~/.profile
 echo "" >> ~/.profile
 cat .profile >> ~/.profile
+cp ~/.profile ~/.bash_profile
 
 # move tmux config
 
