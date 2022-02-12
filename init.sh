@@ -31,3 +31,6 @@ cat .profile >> ~/.bashrc
 cp .tmux.conf ~/
 cp setup.cfg ~/
 cp .hushlogin ~/
+
+# install all neccessary python packages
+pip3 install -r requirements.in

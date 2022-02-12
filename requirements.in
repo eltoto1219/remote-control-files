@@ -1,0 +1,5 @@
+flake8
+black
+isort
+pep8
+pip-tools
