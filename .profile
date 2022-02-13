@@ -32,16 +32,15 @@ export LSCOLORS=Exfxcxdxbxegedabagacad
 alias ls='ls --color=auto'
 alias ls='ls -G'
 
-test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
+# test -e "${HOME}/.iterm2_shell_integration.bash" && source "${HOME}/.iterm2_shell_integration.bash"
 
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# eval "$(/opt/homebrew/bin/brew shellenv)"
 
-# Setting PATH for Python 3.10
-# The original version is saved in .profile.pysave
-PATH="/Library/Frameworks/Python.framework/Versions/3.10/bin:${PATH}"
+
 export PATH
 alias python='python3.9'
 alias pip='pip3'
+alias virtualenv='python3.9 -m venv'
 
 # Setting PATH for Python 3.9
 # The original version is saved in .profile.pysave
