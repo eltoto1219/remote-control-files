@@ -1,13 +1,26 @@
-"SET LEADER:
+" === IDK ===
+syntax on
+let g:python3_host_prog = '/usr/bin/python3.9'
+" let g:python_host_prog = '/usr/bin/python2'
+
+" === SET LEADER ===
 let mapleader="w"
-"PLUGINS:
-let g:ale_completion_enabled = 0
+
+" === PRE-PLUGIN COMMANDS ===
+let g:ale_completion_enabled=0
 let g:ale_disable_lsp=1
+
+" === PLUGINS ===
 call plug#begin('~/.vim/plugged')
+" Plug 'brooth/far.vim'
+" Plug 'mileszs/ack.vim'
+Plug 'wincent/ferret'
 Plug 'alvan/vim-closetag'
 Plug 'yuezk/vim-js'
 Plug 'maxmellon/vim-jsx-pretty'
 Plug 'davidhalter/jedi-vim'
+Plug 'roxma/nvim-yarp'
+Plug 'roxma/vim-hug-neovim-rpc'
 Plug 'vim-python/python-syntax'
 Plug 'dense-analysis/ale'
 Plug 'morhetz/gruvbox'
@@ -17,30 +30,54 @@ Plug 'vim-utils/vim-man'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'Yggdroot/indentLine'
 Plug 'vim-airline/vim-airline'
+Plug 'google/vimscript-language-server'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'ervandew/supertab'
-Plug 'lervag/vimtex'
-"Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'tmhedberg/SimpylFold'
-Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-commentary'
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/vim-lsp'
+Plug 'mattn/vim-lsp-settings'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
 call plug#end()
 
-" PLUGIN SETTING:
-let g:SuperTabClosePreviewOnPopupClose=0
-autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+" ACK/Ferret
+let g:ackprg = 'rg --vimgrep --type-not sql --smart-case'
+let g:ack_autoclose = 1
+let g:ack_use_cword_for_empty_search = 1
+cnoreabbrev Ack Ack!
+nnoremap <leader>f :silent! Ack!<Space>
+nnoremap <leader>r :silent! Acks<Space>/
+let g:FerretHlsearch=1
+let g:FerretAutojump=1
+
+
+" === PLUGIN SETTING ===
+if executable('vimscript-language-server')
+  au User lsp_setup call lsp#register_server({
+          \ 'name': 'vimscript-language-server',
+          \ 'cmd': {server_info->WrapLspTee(['vimscript-language-server'])},
+          \ 'whitelist': ['vim'],
+          \ })
+endif
+if executable('pyls')
+    " pip install python-language-server
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'pyls',
+        \ 'cmd': {server_info->['pyls']},
+        \ 'allowlist': ['python'],
+        \ })
+endif
+
+"JEFDI
 let g:jedi#auto_close_doc=1
-let g:SuperTabDefaultCompletionType = "context"
-let g:SuperTabCompletionContexts = ['s:ContextText']
-let SuperTabContextTextOmniPrecedence = ['&omnifunc']
-let g:tex_flavor = 'latex'
-"let g:coc_global_extensions = ['coc-tsserver' , 'coc-python', 'coc-yaml', 'coc-json', 'coc-css', 'coc-html']
-"let g:coc_disable_startup_warning=1
-let g:jedi#auto_vim_configuration = 0
-let g:jedi#auto_initialization = 0
-let g:jedi#completions_enabled = 0
+let g:jedi#auto_vim_configuration=0
+let g:jedi#auto_initialization=1
+let g:jedi#completions_enabled=0
 let g:jedi#documentation_command = "K"
 let g:jedi#squelch_py_warning = 1
+
+"AIRLINE
 let g:airline#extensions#coc#enabled=1
 let g:airline#extensions#ale#enabled=1
 let g:airline#extensions#tabline#enabled=1
@@ -52,14 +89,19 @@ let g:ctrlp_custom_ignore = {
   \ 'file': '\v\.(exe|so|dll)$',
   \ 'link': 'some_bad_symbolic_links',
   \ }
+
+"CRTRLP
 let g:ctrlp_user_command = 'find %s -type f'
 let g:ctrlp_use_caching=0
 let g:ctrlp_map = '<leader>s'
 let g:ctrlp_cmd = 'CtrlP'
-let g:netrw_browse_g=2
-let g:netrw_banner=0
-let g:netrw_winsize=25
-let g:ale_completion_autoimport = 1
+let g:ctrlp_by_filepath=0
+let g:ctrlp_pregexp=0
+let g:ctrlp_max_depth = 3
+let g:ctrlp_default_input = 1
+
+"ALE
+let g:ale_completion_autoimport = 0
 let g:ale_fixers={'python': ['autopep8', 'black', 'isort'], 'javascript': ['prettier', 'eslint']}
 let g:ale_fix_on_save=1
 let g:ale_fix_on_insert_leave=1
@@ -72,25 +114,62 @@ let g:ale_python_flake8_options = '--ignore=E203,E741,E501'
 let g:ale_lint_on_insert_leave=1
 "let g:ale_linters_explicit=1
 let b:ale_warn_about_trailing_whitespace=0
-" let b:coc_suggest_disable = 1
 let g:ale_sign_column_always=1
 let g:ale_set_quickfix=1
 let g:ale_set_loclist=0
 let g:ale_set_highlights=1
 let g:ale_sign_error='!'
 let g:ale_sign_warning='?'
+
+"GRUVBOX
 let g:gruvbox_invert_selection = '0'
 let g:gruvbox_contrast_dark = 'hard'
 let g:closetag_filenames = '*.html,*.xhtml,*.phtml, *jsx, *js'
+
+"RIPGREP
 if executable('rg')
     let g:rg_derive_root='true'
     let g:rg_highlight="true"
 endif
 
-" TAGS:
+" === TAGS ===
 set tags=$HOME/.vimtags
 
-" SIGNCOLUM:
+"SUPERTAB
+let g:SuperTabClosePreviewOnPopupClose=1
+let g:SuperTabDefaultCompletionType = "context"
+let g:SuperTabLongestHighlight=1
+let g:SuperTabCompletionContexts = ['s:ContextDiscover', "s:ContextText"]
+let g:SuperTabRetainCompletionDuration='insert'
+
+
+" LSP
+function! s:on_lsp_buffer_enabled() abort
+  " setlocal omnifunc=lsp#complete
+	nmap <buffer> gd <plug>(lsp-definition)
+	nmap <buffer> <f2> <plug>(lsp-rename)
+endfunction
+
+augroup lsp_install
+	au!
+	autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
+
+let g:lsp_enable_autocomplete=v:true
+let g:lsp_semantic_enabled=0
+let g:lsp_preview_keep_focus=0
+let g:lsp_preview_autoclose=1
+let g:lsp_completion_documentation_enabled=0
+let g:lsp_preview_float=1
+let g:lsp_diagnostics_enabled=0
+let g:lsp_insert_text_enabled=1
+let g:lsp_edit_text_enabled=1
+let g:lsp_async_completion=1
+let g:asyncomplete_auto_completeopt=0
+let g:lsp_completion_resolve_timeout=10000
+" autocmd FileType python setlocal completefunc=lsp#complete
+
+" === SIGNCOLUM ===
 if has("patch-8.1.1564")
   " Recently vim can merge signcolumn and number column into one
   set signcolumn=number
@@ -98,12 +177,8 @@ else
   set signcolumn=yes
 endif
 
-
-" GENERAL:
+" === GENERAL ===
 let skip_defaults_vim=1
-set completefunc=".,d"
-set cpt=".,d"
-set completeopt=menuone,noinsert,noselect
 set viminfo=""
 set tabstop=2
 set softtabstop=2
@@ -112,10 +187,8 @@ set smartindent
 set foldmethod=indent
 set foldlevel=99
 set backspace=2
-" set termguicolors
 set scrolloff=8
 syntax enable
-syntax on
 set t_Co=256
 set noerrorbells
 set noinsertmode
@@ -129,55 +202,52 @@ set nobackup
 set undofile
 set undodir=~/.vim/undodir
 set mouse=
-" set clipboard=unnamedplus
 set encoding=utf-8
 set incsearch
 set hlsearch
 set sel=exclusive
-"set statusline^=%{coc#status()}
+""set statusline^=%{coc#status()}
 set statusline+=%{StatusDiagnostic()}
 set statusline+=%{FugitiveStatusline()}
 set background=dark
 set shortmess+=c
 colorscheme gruvbox
-" hi ColorColumn ctermbg=819
+"" hi ColorColumn ctermbg=819
 hi StatusLine ctermbg=819
 let python_highlight_all = 1
-hi Terminal ctermbg=black ctermfg=white guibg=black guifg=blue
+" hi Terminal ctermbg=black ctermfg=white guibg=black guifg=blue
 set colorcolumn=88
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip
 set wildmenu
 set wildmode=longest:full,full
 set winminheight=0
 set winminwidth=15
-" set completeopt-=preview
+set completeopt=menuone,preview,noinsert
+set complete=.,w,b,d
+
+" === AUTO COMMANDS ===
 "
-
-" inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-" inoremap <expr> <CR> pumvisible() ? "\<C-n>" : "\<CR>"
-" inoremap <expr> <S-CR> pumvisible() ? "\<C-p>" : "\<CR>"
-
-" AUTO Commands
+" autocmd FileType python set omnifunc+=lsp#complete
 autocmd FileType css set omnifunc+=csscomplete#CompleteCSS
 autocmd FileType html set omnifunc+=htmlcomplete#CompleteTags
 autocmd FileType javascript set omnifunc+=javascriptcomplete#CompleteJS
 autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
-autocmd FileType python setlocal completeopt-=preview
+" autocmd FileType python setlocal completeopt-=preview
+"
 augroup FiletypeGroup
     autocmd!
     au BufNewFile,BufRead *.jsx set filetype=javascript.jsx
 augroup END
+
 augroup ReduceNoise
     autocmd!
     autocmd BufEnter,BufNewFile,WinEnter,WinNew * :call ResizeSplits()
 augroup END
 
-" for html/rb/json/yaml files, 2 spaces
 autocmd Filetype html setlocal ts=2 sw=2 expandtab
 autocmd Filetype ruby setlocal ts=2 sw=2 expandtab
 autocmd Filetype json setlocal ts=2 sw=2 expandtab
 autocmd Filetype yaml setlocal ts=2 sw=2 expandtab
-
 " for js/coffee/jade/python files, 4 spaces
 autocmd Filetype python setlocal ts=4 sw=4 sts=4 textwidth=119 expandtab autoindent fileformat=unix
 autocmd Filetype javascript setlocal ts=4 sw=4 sts=4 textwidth=119 expandtab autoindent fileformat=unix
@@ -186,12 +256,27 @@ autocmd Filetype jade setlocal ts=4 sw=4 sts=4 textwidth=119 expandtab autoinden
 autocmd BufLeave term://* startinsert
 autocmd BufEnter term://* startinsert
 
-" UNMAP THE FOLLOWING:
+function! Temp()
+	if &buftype == "quickfix"
+		echo ''
+	else
+		cclose
+	endif
+endfunction
+
+augroup Hi
+    autocmd!
+    autocmd WinEnter,WinLeave * exec Temp()
+augroup END
+
+" === UNMAP THE FOLLOWING: ===
 nnoremap <nowait>dk <Esc>
 nnoremap <nowait>dj <Esc>
-" ADDING COMMAND:
+
+" === ADDING COMMAND ===
 command -nargs=+ -complete=file Ex call ExecFile(<q-args>)
-" FIX SLOW MAPPINGS:
+
+" === FIX SLOW MAPPINGS ===
 iabbrev </ </<C-X><C-O>
 nnoremap <nowait><leader>" ciw""<Esc>P<Esc>
 nnoremap <nowait><leader>' ciw''<Esc>P<Esc>
@@ -199,7 +284,7 @@ nnoremap <nowait>d' di'hPl2x<Esc>
 nnoremap <nowait>d" di"hpl2x<esc>
 nnoremap <nowait><leader>n :call NavForward()<CR>
 nnoremap <nowait><leader>p :call NavBackward()<CR>
-nnoremap <nowait><leader>f za
+nnoremap <nowait><leader>c za
 nnoremap <nowait>dw dw
 nnoremap <nowait>d2w d2w
 nnoremap <nowait>d3w d3w
@@ -208,7 +293,8 @@ nnoremap <nowait>yw yw
 nnoremap <nowait>cw cw
 nnoremap <nowait>gu g~wi<Esc>
 nnoremap <nowait>gU g~Wi<Esc>
-" NORMAl MAPPINGS:
+
+" === NORMAl MAPPINGS ===
 autocmd FileType python map <leader>e :call ExecCurFile()<CR>
 nnoremap <nowait>W" ciW""<Esc>P
 nnoremap <nowait>W' ciW''<Esc>P
@@ -219,18 +305,18 @@ nnoremap ww :silent! w! <CR>
 nnoremap wq :silent call SaveQuit() <CR>
 nnoremap <leader>t :w <bar> :call OpenTerm()<CR>
 map <leader>/ :<C-u>execute "!pydoc3 " . expand("<cword>")<CR>
-" PLUGIN MAPPING:
-"map <silent> gd <Plug>(coc-definition)
-"map <silent> gr <Plug>(coc-references)
-"map <leader>rr :CocSearch <C-R>=expand("<cword>")<CR><CR>
+
+" === PLUGIN MAPPING ===
 nmap <nowait><leader>[ <Plug>(ale_previous_wrap)
 nmap <nowait><leader>] <Plug>(ale_next_wrap)
 
-
-" INTRACTIVE MAPPINGS:
+" === INTRACTIVE MAPPINGS ===
 inoremap jk <Esc>l
+inoremap <expr> <nowait>wj  pumvisible() ? "\<C-n>" : "wj"
+inoremap <expr> <nowait>wk pumvisible() ? "\<C-p>" : "wk"
+inoremap <expr> <nowait><CR> pumvisible() ? "\<CR><Esc>a" : "\<CR>"
 
-" TERM MAPPINGS:
+" === TERM MAPPINGS ===
 tnoremap jk <C-\><C-n>
 tnoremap ; <C-w>:
 tnoremap <leader>t <C-W>:b! #<CR>
@@ -247,21 +333,7 @@ nnoremap <leader>l :wincmd l <bar> :w <bar>:silent! set autoread <CR>
 nnoremap <leader>= <C-W>:resize +5 <CR>
 nnoremap <leader>- <C-W>:resize -5 <CR>
 
-" MISC PLUGIN:
-"if has('nvim')
-"  inoremap <silent><expr> <c-space> coc#refresh()
-"else
-"  inoremap <silent><expr> <c-@> coc#refresh()
-"endif
-
-if exists('*complete_info')
-  inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
-else
-  inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-endif
-
-" FUNCTIONS:
-
+" === FUNCTIONS ===
 function! s:check_back_space() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
@@ -280,7 +352,6 @@ fun SearchDoc()
 	call inputrestore()
 	execute "!pydoc3 " . filename
 endfun
-
 
 fun BufferForward()
 	let curbuf = bufnr("%")
@@ -355,7 +426,6 @@ fun ExecFile(filename)
 	endif
 endfun
 
-
 fun TerminalForward()
 	let a = term_list()
 	let c = 0
@@ -384,10 +454,13 @@ fun TerminalBackward()
 	endif
 endfun
 
-
 " add no name condition for special quit
 fun Quit()
-	if bufname("%") == ''
+	let buffers = filter(range(1, bufnr('$')), 'empty(bufname(v:val)) && bufwinnr(v:val) < 0')
+  if !empty(buffers)
+      exe 'silent q!'.join(buffers, ' ')
+	endif
+	if empty(bufname("%"))
 		silent q!
 	elseif (len(getbufinfo()) == 1)
 		silent q!
@@ -398,7 +471,11 @@ fun Quit()
 endfun
 
 fun SaveQuit()
-	if bufname("%") == ''
+	let buffers = filter(range(1, bufnr('$')), 'empty(bufname(v:val)) && bufwinnr(v:val) < 0')
+  if !empty(buffers)
+      exe 'silent q!'.join(buffers, ' ')
+	endif
+	if empty(bufname("%"))
 		silent q!
 	elseif (len(getbufinfo()) == 1)
 		silent wq!
@@ -429,5 +506,5 @@ function! ResizeSplits()
   wincmd=
 	exe "vert resize " . (winwidth(0) * 1000)
 endfunction
-"only if coc is the only auto complete
+
 
