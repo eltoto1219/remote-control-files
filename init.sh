@@ -33,7 +33,7 @@ cp setup.cfg ~/
 cp .hushlogin ~/
 
 # add to path
-echo "PATH=$PATH:$HOME/.local/bin" >> ~/.profile
+echo "PATH=$PATH:$HOME/.local/bin" >> ~/.bashrc
 
 # install all neccessary python packages
 pip3 install -r requirements.in
