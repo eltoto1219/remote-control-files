@@ -32,5 +32,8 @@ cp .tmux.conf ~/
 cp setup.cfg ~/
 cp .hushlogin ~/
 
+# add to path
+"PATH=$PATH:$HOME/.local/bin" >> ~/.profile
+
 # install all neccessary python packages
 pip3 install -r requirements.in
