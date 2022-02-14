@@ -1,6 +1,6 @@
 " === IDK ===
 syntax on
-let g:python3_host_prog = '/usr/bin/python3.9'
+" let g:python3_host_prog = '/usr/bin/python3.9'
 " let g:python_host_prog = '/usr/bin/python2'
 
 " === SET LEADER ===
@@ -12,15 +12,13 @@ let g:ale_disable_lsp=1
 
 " === PLUGINS ===
 call plug#begin('~/.vim/plugged')
-" Plug 'brooth/far.vim'
-" Plug 'mileszs/ack.vim'
+" Plug 'maxboisvert/vim-simple-complete'
+Plug 'ervandew/supertab'
+" Plug 'maralla/completor.vim'
 Plug 'wincent/ferret'
 Plug 'alvan/vim-closetag'
 Plug 'yuezk/vim-js'
 Plug 'maxmellon/vim-jsx-pretty'
-Plug 'davidhalter/jedi-vim'
-Plug 'roxma/nvim-yarp'
-Plug 'roxma/vim-hug-neovim-rpc'
 Plug 'vim-python/python-syntax'
 Plug 'dense-analysis/ale'
 Plug 'morhetz/gruvbox'
@@ -30,9 +28,7 @@ Plug 'vim-utils/vim-man'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'Yggdroot/indentLine'
 Plug 'vim-airline/vim-airline'
-Plug 'google/vimscript-language-server'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'ervandew/supertab'
 Plug 'tmhedberg/SimpylFold'
 Plug 'tpope/vim-commentary'
 Plug 'prabirshrestha/asyncomplete.vim'
@@ -54,28 +50,21 @@ let g:FerretAutojump=1
 
 " === PLUGIN SETTING ===
 if executable('vimscript-language-server')
-  au User lsp_setup call lsp#register_server({
-          \ 'name': 'vimscript-language-server',
-          \ 'cmd': {server_info->WrapLspTee(['vimscript-language-server'])},
-          \ 'whitelist': ['vim'],
-          \ })
+	au User lsp_setup call lsp#register_server({
+					\ 'name': 'vimscript-language-server',
+					\ 'cmd': {server_info->WrapLspTee(['vimscript-language-server'])},
+					\ 'whitelist': ['vim'],
+					\ })
 endif
 if executable('pyls')
-    " pip install python-language-server
-    au User lsp_setup call lsp#register_server({
-        \ 'name': 'pyls',
-        \ 'cmd': {server_info->['pyls']},
-        \ 'allowlist': ['python'],
-        \ })
+		" pip install python-language-server
+		au User lsp_setup call lsp#register_server({
+				\ 'name': 'pyls',
+				\ 'cmd': {server_info->['pyls']},
+				\ 'allowlist': ['python'],
+				\ })
 endif
 
-"JEFDI
-let g:jedi#auto_close_doc=1
-let g:jedi#auto_vim_configuration=0
-let g:jedi#auto_initialization=1
-let g:jedi#completions_enabled=0
-let g:jedi#documentation_command = "K"
-let g:jedi#squelch_py_warning = 1
 
 "AIRLINE
 let g:airline#extensions#coc#enabled=1
@@ -85,10 +74,10 @@ let g:airline#extensions#tabline#formatter='unique_tail'
 let g:airline_theme="alduin"
 let g:ctrlp_working_path_mode = 'ra'
 let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
-  \ 'file': '\v\.(exe|so|dll)$',
-  \ 'link': 'some_bad_symbolic_links',
-  \ }
+	\ 'dir':  '\v[\/]\.(git|hg|svn)$',
+	\ 'file': '\v\.(exe|so|dll)$',
+	\ 'link': 'some_bad_symbolic_links',
+	\ }
 
 "CRTRLP
 let g:ctrlp_user_command = 'find %s -type f'
@@ -128,24 +117,16 @@ let g:closetag_filenames = '*.html,*.xhtml,*.phtml, *jsx, *js'
 
 "RIPGREP
 if executable('rg')
-    let g:rg_derive_root='true'
-    let g:rg_highlight="true"
+		let g:rg_derive_root='true'
+		let g:rg_highlight="true"
 endif
 
 " === TAGS ===
 set tags=$HOME/.vimtags
 
-"SUPERTAB
-let g:SuperTabClosePreviewOnPopupClose=1
-let g:SuperTabDefaultCompletionType = "context"
-let g:SuperTabLongestHighlight=1
-let g:SuperTabCompletionContexts = ['s:ContextDiscover', "s:ContextText"]
-let g:SuperTabRetainCompletionDuration='insert'
-
-
 " LSP
 function! s:on_lsp_buffer_enabled() abort
-  " setlocal omnifunc=lsp#complete
+	" setlocal omnifunc=lsp#complete
 	nmap <buffer> gd <plug>(lsp-definition)
 	nmap <buffer> <f2> <plug>(lsp-rename)
 endfunction
@@ -155,8 +136,9 @@ augroup lsp_install
 	autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
 
+let g:SuperTabDefaultCompletionType = 'context'
 let g:lsp_enable_autocomplete=v:true
-let g:lsp_semantic_enabled=0
+let g:lsp_semantic_enabled=1
 let g:lsp_preview_keep_focus=0
 let g:lsp_preview_autoclose=1
 let g:lsp_completion_documentation_enabled=0
@@ -166,15 +148,15 @@ let g:lsp_insert_text_enabled=1
 let g:lsp_edit_text_enabled=1
 let g:lsp_async_completion=1
 let g:asyncomplete_auto_completeopt=0
-let g:lsp_completion_resolve_timeout=10000
+" let g:lsp_completion_resolve_timeout=10000
 " autocmd FileType python setlocal completefunc=lsp#complete
 
 " === SIGNCOLUM ===
 if has("patch-8.1.1564")
-  " Recently vim can merge signcolumn and number column into one
-  set signcolumn=number
+	" Recently vim can merge signcolumn and number column into one
+	set signcolumn=number
 else
-  set signcolumn=yes
+	set signcolumn=yes
 endif
 
 " === GENERAL ===
@@ -219,7 +201,7 @@ let python_highlight_all = 1
 set colorcolumn=88
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip
 set wildmenu
-set wildmode=longest:full,full
+set wildmode=list:full
 set winminheight=0
 set winminwidth=15
 set completeopt=menuone,preview,noinsert
@@ -235,13 +217,13 @@ autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
 " autocmd FileType python setlocal completeopt-=preview
 "
 augroup FiletypeGroup
-    autocmd!
-    au BufNewFile,BufRead *.jsx set filetype=javascript.jsx
+		autocmd!
+		au BufNewFile,BufRead *.jsx set filetype=javascript.jsx
 augroup END
 
 augroup ReduceNoise
-    autocmd!
-    autocmd BufEnter,BufNewFile,WinEnter,WinNew * :call ResizeSplits()
+		autocmd!
+		autocmd BufEnter,BufNewFile,WinEnter,WinNew * :call ResizeSplits()
 augroup END
 
 autocmd Filetype html setlocal ts=2 sw=2 expandtab
@@ -265,8 +247,8 @@ function! Temp()
 endfunction
 
 augroup Hi
-    autocmd!
-    autocmd WinEnter,WinLeave * exec Temp()
+		autocmd!
+		autocmd WinEnter,WinLeave * exec Temp()
 augroup END
 
 " === UNMAP THE FOLLOWING: ===
@@ -301,9 +283,9 @@ nnoremap <nowait>W' ciW''<Esc>P
 " map <leader>/ :call SearchDoc() <CR>
 nnoremap <space> :set hlsearch!<CR>
 nnoremap qq :silent call Quit() <CR>
-nnoremap ww :silent! w! <CR>
-nnoremap wq :silent call SaveQuit() <CR>
-nnoremap <leader>t :w <bar> :call OpenTerm()<CR>
+nnoremap <leader>w :silent! w! <CR>
+nnoremap <leader>q :silent call SaveQuit() <CR>
+nnoremap <nowait><leader>t :w <bar> :call OpenTerm()<CR>
 map <leader>/ :<C-u>execute "!pydoc3 " . expand("<cword>")<CR>
 
 " === PLUGIN MAPPING ===
@@ -312,8 +294,8 @@ nmap <nowait><leader>] <Plug>(ale_next_wrap)
 
 " === INTRACTIVE MAPPINGS ===
 inoremap jk <Esc>l
-inoremap <expr> <nowait>wj  pumvisible() ? "\<C-n>" : "wj"
-inoremap <expr> <nowait>wk pumvisible() ? "\<C-p>" : "wk"
+	inoremap <expr> <nowait><leader>j  pumvisible() ? "\<C-n>" : "wj"
+inoremap <expr> <nowait><leader>k pumvisible() ? "\<C-p>" : "wk"
 inoremap <expr> <nowait><CR> pumvisible() ? "\<CR><Esc>a" : "\<CR>"
 
 " === TERM MAPPINGS ===
@@ -322,15 +304,16 @@ tnoremap ; <C-w>:
 tnoremap <leader>t <C-W>:b! #<CR>
 tnoremap <leader>1 <C-W>:b1 #<CR>
 tnoremap qq <C-W>:bw! <CR>
-tnoremap <nowait><leader>l <C-W>:wincmd l<CR>
-tnoremap <nowait><leader>h <C-W>:wincmd h<CR>
+" tnoremap <nowait><leader>l <C-W>:wincmd l<CR>
+" tnoremap <nowait><leader>h <C-W>:wincmd h<CR>
 tnoremap <leader>n <C-w>:call TerminalForward()<CR>
 tnoremap <leader>p <C-w>:call TerminalBackward()<CR>
-nnoremap <leader>h :wincmd h <bar> :w <bar>:silent! set autoread <CR>
-nnoremap <leader>j :wincmd j <bar> :w <bar>:silent! set autoread <CR>
-nnoremap <leader>k :wincmd k <bar> :w <bar>:silent! set autoread <CR>
-nnoremap <leader>l :wincmd l <bar> :w <bar>:silent! set autoread <CR>
+nnoremap <leader>h :wincmd h <bar> :silent! set autoread <CR>
+nnoremap <leader>j :wincmd j <bar> :silent! set autoread <CR>
+nnoremap <leader>k :wincmd k <bar> :silent! set autoread <CR>
+nnoremap <leader>l :wincmd l <bar> :silent! set autoread <CR>
 nnoremap <leader>= <C-W>:resize +5 <CR>
+nnoremap V <c-V>
 nnoremap <leader>- <C-W>:resize -5 <CR>
 
 " === FUNCTIONS ===
@@ -506,5 +489,25 @@ function! ResizeSplits()
   wincmd=
 	exe "vert resize " . (winwidth(0) * 1000)
 endfunction
+
+function! CleverTab()
+	   if strpart( getline('.'), 0, col('.')-1 ) =~ '^\s*$'
+	      return "\<Tab>"
+	   else
+	      return "\<C-N>"
+	   endif
+	endfunction
+inoremap <Tab> <C-R>=CleverTab()<CR>
+autocmd InsertCharPre * call AutoComplete()
+fun! AutoComplete()
+    if v:char =~ '\K'
+        \ && getline('.')[col('.') - 4] !~ '\K'
+        \ && getline('.')[col('.') - 3] =~ '\K'
+        \ && getline('.')[col('.') - 2] =~ '\K' " last char
+        \ && getline('.')[col('.') - 1] !~ '\K'
+
+        call feedkeys("\<c-n>")
+    end
+endfun
 
 
