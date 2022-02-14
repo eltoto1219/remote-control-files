@@ -15,7 +15,7 @@ echo "force_color_prompt=yes" >> ~/.bashrc
 echo "export WANDB_CACHE_DIR="/opt/cache"" >> ~/.bashrc
 
 echo "Removing unsued environments"
-./rm_envs.sh
+bash $HOME/remote-control-files/rm_envs.sh
 
 echo "Setting up Vim"
-./init.sh
+bash $HOME/remote-control-files/init.sh
