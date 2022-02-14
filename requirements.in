@@ -3,4 +3,3 @@ black
 isort
 pep8
 pip-tools
-python-language-server[all]
