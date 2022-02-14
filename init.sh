@@ -20,11 +20,11 @@ vim +'PlugUpdate' +qa
 
 # stuff to add to .profile
 
-echo "" >> ~/.bash_profile
-echo "#==== AUTO ADDED ===" >> ~/.bash_profile
-echo "" >> ~/.bash_profile
-cat .profile >> ~/.bash_profile
-cat .profile >> ~/.bashrc
+# echo "" >> ~/.bash_profile
+# echo "#==== AUTO ADDED ===" >> ~/.bash_profile
+# echo "" >> ~/.bash_profile
+# cat .profile >> ~/.bash_profile
+# cat .profile >> ~/.bashrc
 
 # move tmux config
 
