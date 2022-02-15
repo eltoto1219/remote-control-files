@@ -500,7 +500,7 @@ function! CleverTab()
 inoremap <Tab> <C-R>=CleverTab()<CR>
 autocmd InsertCharPre * call AutoComplete()
 fun! AutoComplete()
-    if v:char =~ '\K'
+    if v:char =~ '\K' && !pumvisible()
         \ && getline('.')[col('.') - 4] !~ '\K'
         \ && getline('.')[col('.') - 3] =~ '\K'
         \ && getline('.')[col('.') - 2] =~ '\K' " last char
