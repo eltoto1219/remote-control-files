@@ -140,6 +140,7 @@ let g:lsp_enable_autocomplete=v:true
 let g:lsp_semantic_enabled=1
 let g:lsp_preview_keep_focus=0
 let g:lsp_preview_autoclose=1
+let g:lsp_signature_help_enabled = 0
 let g:lsp_completion_documentation_enabled=0
 let g:lsp_preview_float=1
 let g:lsp_diagnostics_enabled=0
