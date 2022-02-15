@@ -506,7 +506,7 @@ fun! AutoComplete()
         \ && getline('.')[col('.') - 2] =~ '\K' " last char
         \ && getline('.')[col('.') - 1] !~ '\K'
 
-        call feedkeys("\<c-n>")
+        call feedkeys("\<c-p>", "n")
     end
 endfun
 
