@@ -135,7 +135,7 @@ augroup lsp_install
 augroup END
 
 let g:SuperTabDefaultCompletionType = 'context'
-let g:SuperTabContextTextOmniPrecedence = ['&omnifunc']
+let g:SuperTabContextTextOmniPrecedence = []
 let g:lsp_enable_autocomplete=v:true
 let g:lsp_semantic_enabled=1
 let g:lsp_preview_keep_focus=0
