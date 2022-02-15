@@ -203,7 +203,7 @@ set wildmenu
 set wildmode=list:full
 set winminheight=0
 set winminwidth=15
-set completeopt=menuone,preview,noinsert
+set completeopt=menuone,noinsert
 set complete=.,w,b,d
 
 " === AUTO COMMANDS ===
