@@ -12,9 +12,7 @@ let g:ale_disable_lsp=1
 
 " === PLUGINS ===
 call plug#begin('~/.vim/plugged')
-" Plug 'maxboisvert/vim-simple-complete'
 Plug 'ervandew/supertab'
-" Plug 'maralla/completor.vim'
 Plug 'wincent/ferret'
 Plug 'alvan/vim-closetag'
 Plug 'yuezk/vim-js'
@@ -137,6 +135,7 @@ augroup lsp_install
 augroup END
 
 let g:SuperTabDefaultCompletionType = 'context'
+let g:SuperTabContextTextOmniPrecedence = ['&omnifunc']
 let g:lsp_enable_autocomplete=v:true
 let g:lsp_semantic_enabled=1
 let g:lsp_preview_keep_focus=0
