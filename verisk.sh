@@ -1,12 +1,12 @@
 #!/bin/bash
 
-echo "Setting up EC2 Instance"
-sudo chown -R ubuntu /opt
-mkdir /opt/cache
-cd /opt/ && git clone https://dev.jde.cloud.verisk.com/Antonio.Mendoza/kvp-copynet.git
-cd /opt/ && git clone https://dev.jde.cloud.verisk.com/Antonio.Mendoza/rate-filing-automation.git
-source activate pytorch_latest_p37
-pip install pip-tools
+# echo "Setting up EC2 Instance"
+# sudo chown -R ubuntu /opt
+# mkdir /opt/cache
+# cd /opt/ && git clone https://dev.jde.cloud.verisk.com/Antonio.Mendoza/kvp-copynet.git
+# cd /opt/ && git clone https://dev.jde.cloud.verisk.com/Antonio.Mendoza/rate-filing-automation.git
+# source activate pytorch_latest_p37
+# pip install pip-tools
 
 echo "source activate pytorch_latest_p37" >> ~/.bashrc
 echo "set -o vi" >> ~/.bashrc
@@ -22,8 +22,8 @@ echo "export PYTHONDONTWRITEBYTECODE=1" >> ~/.profile
 echo "force_color_prompt=yes" >> ~/.profile
 echo "export WANDB_CACHE_DIR="/opt/cache"" >> ~/.profile
 
-echo "Removing unsued environments"
-bash $HOME/remote-control-files/rm_envs.sh
+# echo "Removing unsued environments"
+# bash $HOME/remote-control-files/rm_envs.sh
 
 echo "Setting up Vim"
 bash $HOME/remote-control-files/init.sh

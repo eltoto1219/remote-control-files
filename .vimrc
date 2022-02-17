@@ -30,9 +30,9 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'tmhedberg/SimpylFold'
 Plug 'tpope/vim-commentary'
 Plug 'prabirshrestha/asyncomplete.vim'
-Plug 'prabirshrestha/vim-lsp'
-Plug 'mattn/vim-lsp-settings'
-Plug 'prabirshrestha/asyncomplete-lsp.vim'
+" Plug 'prabirshrestha/vim-lsp'
+" Plug 'mattn/vim-lsp-settings'
+" Plug 'prabirshrestha/asyncomplete-lsp.vim'
 call plug#end()
 
 " ACK/Ferret
@@ -47,21 +47,21 @@ let g:FerretAutojump=1
 
 
 " === PLUGIN SETTING ===
-if executable('vimscript-language-server')
-	au User lsp_setup call lsp#register_server({
-					\ 'name': 'vimscript-language-server',
-					\ 'cmd': {server_info->WrapLspTee(['vimscript-language-server'])},
-					\ 'whitelist': ['vim'],
-					\ })
-endif
-if executable('pyls')
-		" pip install python-language-server
-		au User lsp_setup call lsp#register_server({
-				\ 'name': 'pyls',
-				\ 'cmd': {server_info->['pyls']},
-				\ 'allowlist': ['python'],
-				\ })
-endif
+" if executable('vimscript-language-server')
+" 	au User lsp_setup call lsp#register_server({
+" 					\ 'name': 'vimscript-language-server',
+" 					\ 'cmd': {server_info->WrapLspTee(['vimscript-language-server'])},
+" 					\ 'whitelist': ['vim'],
+" 					\ })
+" endif
+" if executable('pyls')
+" 		" pip install python-language-server
+" 		au User lsp_setup call lsp#register_server({
+" 				\ 'name': 'pyls',
+" 				\ 'cmd': {server_info->['pyls']},
+" 				\ 'allowlist': ['python3'],
+" 				\ })
+" endif
 
 
 "AIRLINE
@@ -95,7 +95,7 @@ let g:ale_fix_on_insert_leave=1
 let g:ale_linter_aliases={'jsx': ['css', 'javascript']}
 let g:ale_linters={'python': ['flake8'], 'jsx': ['html', 'css', 'javascript'], 'javascript': ['css', 'javascript']}
 let g:ale_python_flake8_options = '--max-line-length=88'
-let g:ale_python_flake8_options = '--ignore=E203,E741,E501'
+let g:ale_python_flake8_options = '--ignore=E203,E741,E501,W503'
 ":help ale-fix
 "let g:ale_lint_on_text_changed='never'
 let g:ale_lint_on_insert_leave=1
@@ -123,26 +123,26 @@ endif
 set tags=$HOME/.vimtags
 
 " LSP
-function! s:on_lsp_buffer_enabled() abort
-	" setlocal omnifunc=lsp#complete
-	nmap <buffer> gd <plug>(lsp-definition)
-	nmap <buffer> <f2> <plug>(lsp-rename)
-endfunction
+" function! s:on_lsp_buffer_enabled() abort
+" 	" setlocal omnifunc=lsp#complete
+" 	nmap <buffer> gd <plug>(lsp-definition)
+" 	nmap <buffer> <f2> <plug>(lsp-rename)
+" endfunction
 
-augroup lsp_install
-	au!
-	autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-augroup END
+" augroup lsp_install
+" 	au!
+" 	autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+" augroup END
 
 let g:SuperTabDefaultCompletionType = 'context'
 let g:SuperTabContextTextOmniPrecedence = []
 let g:lsp_enable_autocomplete=v:true
-let g:lsp_semantic_enabled=1
+let g:lsp_semantic_enabled=0
 let g:lsp_preview_keep_focus=0
 let g:lsp_preview_autoclose=1
 let g:lsp_signature_help_enabled = 0
 let g:lsp_completion_documentation_enabled=0
-let g:lsp_preview_float=1
+let g:lsp_preview_float=0
 let g:lsp_diagnostics_enabled=0
 let g:lsp_insert_text_enabled=1
 let g:lsp_edit_text_enabled=1
@@ -205,7 +205,7 @@ set wildmode=list:full
 set winminheight=0
 set winminwidth=15
 set completeopt=menuone,noinsert
-set complete=.,w,b,d
+set complete=.
 
 " === AUTO COMMANDS ===
 "
@@ -283,7 +283,7 @@ nnoremap <nowait>W' ciW''<Esc>P
 " map <leader>/ :call SearchDoc() <CR>
 nnoremap <space> :set hlsearch!<CR>
 nnoremap qq :silent call Quit() <CR>
-nnoremap <leader>w :silent! w! <CR>
+nnoremap <nowait><leader>w :silent! w! <CR>
 nnoremap <leader>q :silent call SaveQuit() <CR>
 nnoremap <nowait><leader>t :w <bar> :call OpenTerm()<CR>
 map <leader>/ :<C-u>execute "!pydoc3 " . expand("<cword>")<CR>
@@ -294,9 +294,11 @@ nmap <nowait><leader>] <Plug>(ale_next_wrap)
 
 " === INTRACTIVE MAPPINGS ===
 inoremap jk <Esc>l
-	inoremap <expr> <nowait><leader>j  pumvisible() ? "\<C-n>" : "wj"
-inoremap <expr> <nowait><leader>k pumvisible() ? "\<C-p>" : "wk"
+inoremap <expr> <nowait>jj  pumvisible() ? "\<C-n>" : "wj"
+inoremap <expr> <nowait>kk pumvisible() ? "\<C-p>" : "wk"
 inoremap <expr> <nowait><CR> pumvisible() ? "\<CR><Esc>a" : "\<CR>"
+" inoremap <expr> <CR><CR>  pumvisible() ? "\<CR><Esc>o" : "\<CR><CR>"
+autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
 
 " === TERM MAPPINGS ===
 tnoremap jk <C-\><C-n>
@@ -441,7 +443,7 @@ endfun
 fun Quit()
 	let buffers = filter(range(1, bufnr('$')), 'empty(bufname(v:val)) && bufwinnr(v:val) < 0')
   if !empty(buffers)
-      exe 'silent q!'.join(buffers, ' ')
+      exe 'silent! q! '.join(buffers, ' ')
 	endif
 	if empty(bufname("%"))
 		silent q!
