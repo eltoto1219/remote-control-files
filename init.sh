@@ -38,3 +38,13 @@ echo "PATH=$PATH:$HOME/.local/bin" >> ~/.bashrc
 
 # install all neccessary python packages
 pip3 install -r requirements.in
+
+# install homebrew for gh
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+# add homebrew to path
+echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/antoniomendoza/.profile
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+# install gh
+brew install gh
+# login with gh
+gh auth login
