@@ -1,3 +1,220 @@
+" === FUNCTIONS ===
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+fun! <SID>StripTrailingWhitespaces()
+    let l = line(".")
+    let c = col(".")
+    %s/\s\+$//e
+    call cursor(l, c)
+endfun
+
+fun! OpenTerm()
+	let termlist = term_list()
+	" let termlist = []
+	" for i in getbufinfo()
+	" 		if stridx(i.name, "!/bin/bash") != -1
+	" 				call add(termlist, i.bufnr)
+	" 		endif
+	" endfor
+	"let termlist = uniq(map(filter(getwininfo(), 'v:val.terminal'), 'v:val.bufnr'))
+	let curbuf = bufnr("%")
+	let isinlist = !(index(termlist, curbuf) == -1)
+	if isinlist
+			execute "b! #"
+	elseif len(termlist) > 0
+	for x in termlist
+		execute "b" . x
+		break
+	endfor
+	else
+		wincmd=
+		term ++curwin
+	endif
+endfun
+
+function! BufferForward()
+	let curbuf = bufnr("%")
+  let bufinfolist = getbufinfo()
+	let bufcount = bufnr("$")
+  let buffirst = bufinfolist[1].bufnr
+
+  for i in getbufinfo()
+		let somenum = i.bufnr
+		let somename = i.name
+		let islisted = i.listed
+		let isloaded= i.loaded
+		let cond1 = somenum != ""
+		let cond2 = curbuf < somenum
+		"cond4 = .getbufvar(somenum, '&buftype') ~= 'scratch' | 'terminal'
+		let cond3 = islisted == 1
+		let cond4 = isloaded == 1
+		let cond5 = somename != ""
+		let cond6 = stridx(i.name, "!/bin/bash") == -1
+
+		if cond1 && cond2 && cond3 && cond5 && cond6
+			echo '--> N: ' . somename . ' #: ' . somenum
+			execute ":b " . somenum
+			break
+		elseif somenum == bufcount
+			echo '--> N: ' . bufname(buffirst) . ' #: ' . buffirst
+			execute ':bfirst'
+			break
+		endif
+
+	endfor
+endfun
+
+function! BufferBackward()
+	" echo 'here'
+
+	let curbuf = bufnr("%")
+	let buffirst = getbufinfo()[0].bufnr
+
+  for i in reverse(getbufinfo())
+			let somenum = i['bufnr']
+			let somename = i['name']
+			let islisted = i['listed']
+			let isloaded= i['loaded']
+			let cond1 = isloaded == 1
+			let cond2 = somenum != ""
+			let cond3 = curbuf > somenum
+			"cond4 = .getbufvar(somenum, '&buftype') ~= 'scratch' | 'terminal'
+			let cond4 = islisted == 1
+			let cond5 = somename != ""
+			let cond6 = stridx(i.name, "!/bin/bash") == -1
+
+
+			if curbuf == buffirst  && cond2 && cond5 && cond5 && cond6
+					echo '<-- N: ' . somename . ' #: ' . somenum
+					exe ":buffer " . somenum
+					break
+			elseif cond2 && cond4 && cond3 && cond5 && cond6
+					" echo 'heree'
+					echo '<-- N: ' . somename . ' #: ' . somenum
+					exe ":buffer " . somenum
+					break
+				endif
+		endfor
+endfun
+
+function! Quit()
+	exe ":bw!"
+	let bufname = bufname("%")
+	if bufname == '' || bufname == ""
+		exe ":silent! q!"
+	endif
+endfun
+
+fun! SearchDoc()
+	call inputsave()
+	let filename  = input("documentation search: ", "", "function")
+	call inputrestore()
+	execute "!pydoc3 " . filename
+endfun
+
+fun! ExecCurFile()
+	" exec 'term ++curwin'
+	call OpenTerm()
+	call term_sendkeys("%", "\clear" . "\<CR>")
+	"add more file types here if neeeded
+	call term_sendkeys("%", "\python3 " . expand('#:p'))
+	call term_sendkeys("%",  "\<CR>")
+endfun
+
+fun! ExecFile(filename)
+	let argname = a:filename
+	"add more file types here if neeeded
+	if filereadable(argname)
+		call OpenTerm()
+		"exec 'term ++curwin'
+		call term_sendkeys("%", "\clear" . "\<CR>")
+		call term_sendkeys("%", "\python3 " . argname)
+		call term_sendkeys("%",  "\<CR>")
+	else
+		echo "NOT A VALID FILE"
+	endif
+endfun
+
+fun! TerminalForward()
+	let a = term_list()
+	let c = 0
+	if (len(a) != 1)
+		for i in a
+			let c = i
+			if (bufnr(c) != bufnr("%"))
+				execute ":buffer ". c
+				break
+			endif
+		endfor
+	endif
+endfun
+
+fun! TerminalBackward()
+	let a = reverse(term_list())
+	let c = 0
+	if (len(a) != 1)
+		for i in a
+			let c = i
+			if (bufnr(c) != bufnr("%"))
+				execute ":buffer ". c
+				break
+			endif
+		endfor
+	endif
+endfun
+
+fun! NavForward()
+	if (getbufvar("%", "&buftype") ==# 'terminal')
+		call TerminalForward()
+	else
+		call BufferForward()
+	endif
+endfun
+
+fun! NavBackward()
+	if (getbufvar("%", "&buftype") ==# 'terminal')
+		call TerminalBackward()
+	else
+		call BufferBackward()
+	endif
+endfun
+
+function! ResizeSplits()
+	"later we can make logic for other stuff like for specific splits
+  wincmd=
+	exe "vert resize " . (winwidth(0) * 1000)
+endfunction
+
+function! CleverTab()
+	   if strpart( getline('.'), 0, col('.')-1 ) =~ '^\s*$'
+	      return "\<Tab>"
+	   else
+	      return "\<C-N>"
+	   endif
+	endfunction
+inoremap <Tab> <C-R>=CleverTab()<CR>
+autocmd InsertCharPre * call AutoComplete()
+
+fun! AutoComplete()
+    if v:char =~ '\K' && !pumvisible()
+        \ && getline('.')[col('.') - 4] !~ '\K'
+        \ && getline('.')[col('.') - 3] =~ '\K'
+        \ && getline('.')[col('.') - 2] =~ '\K' " last char
+        \ && getline('.')[col('.') - 1] !~ '\K'
+
+        call feedkeys("\<c-p>", "n")
+    end
+endfun
+
+if v:version >= 700
+  au BufLeave * let b:winview = winsaveview()
+  au BufEnter * if(exists('b:winview')) | call winrestview(b:winview) | endif
+endif
+
 " === IDK ===
 syntax on
 " let g:python3_host_prog = '/usr/bin/python3.9'
@@ -46,30 +263,23 @@ let g:FerretHlsearch=1
 let g:FerretAutojump=1
 
 
-" === PLUGIN SETTING ===
-" if executable('vimscript-language-server')
-" 	au User lsp_setup call lsp#register_server({
-" 					\ 'name': 'vimscript-language-server',
-" 					\ 'cmd': {server_info->WrapLspTee(['vimscript-language-server'])},
-" 					\ 'whitelist': ['vim'],
-" 					\ })
-" endif
-" if executable('pyls')
-" 		" pip install python-language-server
-" 		au User lsp_setup call lsp#register_server({
-" 				\ 'name': 'pyls',
-" 				\ 'cmd': {server_info->['pyls']},
-" 				\ 'allowlist': ['python3'],
-" 				\ })
-" endif
-
-
 "AIRLINE
+let g:airline_theme="alduin"
 let g:airline#extensions#coc#enabled=1
 let g:airline#extensions#ale#enabled=1
 let g:airline#extensions#tabline#enabled=1
+let g:airline#extensions#tabline#left_sep=""
+let g:airline#extensions#tabline#left_alt_sep=""
+let g:airline#extensions#tabline#right_sep=""
+let g:airline#extensions#tabline#right_alt_sep=""
+let g:airline#extensions#tabline#buffer_idx_mode = 1
+let g:airline_powerline_fonts = 1
+let g:airline_left_sep = ""
+let g:airline_right_sep = ""
 let g:airline#extensions#tabline#formatter='unique_tail'
-let g:airline_theme="alduin"
+let g:airline_mode_map = { 'n': 'N', 'i': "I", 'c': "C", "v": "V", "t": "T", "multi": 'w'}
+
+
 let g:ctrlp_working_path_mode = 'ra'
 let g:ctrlp_custom_ignore = {
 	\ 'dir':  '\v[\/]\.(git|hg|svn)$',
@@ -95,7 +305,7 @@ let g:ale_fix_on_insert_leave=1
 let g:ale_linter_aliases={'jsx': ['css', 'javascript']}
 let g:ale_linters={'python': ['flake8'], 'jsx': ['html', 'css', 'javascript'], 'javascript': ['css', 'javascript']}
 let g:ale_python_flake8_options = '--max-line-length=88'
-let g:ale_python_flake8_options = '--ignore=E203,E741,E501,W503'
+let g:ale_python_flake8_options = '--ignore=E203,E741,E501,W503,E402'
 ":help ale-fix
 "let g:ale_lint_on_text_changed='never'
 let g:ale_lint_on_insert_leave=1
@@ -121,18 +331,6 @@ endif
 
 " === TAGS ===
 set tags=$HOME/.vimtags
-
-" LSP
-" function! s:on_lsp_buffer_enabled() abort
-" 	" setlocal omnifunc=lsp#complete
-" 	nmap <buffer> gd <plug>(lsp-definition)
-" 	nmap <buffer> <f2> <plug>(lsp-rename)
-" endfunction
-
-" augroup lsp_install
-" 	au!
-" 	autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
-" augroup END
 
 let g:SuperTabDefaultCompletionType = 'context'
 let g:SuperTabContextTextOmniPrecedence = []
@@ -161,6 +359,7 @@ endif
 
 " === GENERAL ===
 let skip_defaults_vim=1
+set nrformats+=alpha
 set viminfo=""
 set tabstop=2
 set softtabstop=2
@@ -214,49 +413,23 @@ autocmd FileType css set omnifunc+=csscomplete#CompleteCSS
 autocmd FileType html set omnifunc+=htmlcomplete#CompleteTags
 autocmd FileType javascript set omnifunc+=javascriptcomplete#CompleteJS
 autocmd BufWritePre * :call <SID>StripTrailingWhitespaces()
-" autocmd FileType python setlocal completeopt-=preview
-"
+
 augroup FiletypeGroup
 		autocmd!
 		au BufNewFile,BufRead *.jsx set filetype=javascript.jsx
 augroup END
 
-augroup ReduceNoise
-		autocmd!
-		autocmd BufEnter,BufNewFile,WinEnter,WinNew * :call ResizeSplits()
-augroup END
 
-autocmd Filetype html setlocal ts=2 sw=2 expandtab
-autocmd Filetype ruby setlocal ts=2 sw=2 expandtab
-autocmd Filetype json setlocal ts=2 sw=2 expandtab
-autocmd Filetype yaml setlocal ts=2 sw=2 expandtab
-" for js/coffee/jade/python files, 4 spaces
-autocmd Filetype python setlocal ts=4 sw=4 sts=4 textwidth=119 expandtab autoindent fileformat=unix
-autocmd Filetype javascript setlocal ts=4 sw=4 sts=4 textwidth=119 expandtab autoindent fileformat=unix
-autocmd Filetype cofeescript setlocal ts=4 sw=4 sts=4 textwidth=119 expandtab autoindent fileformat=unix
-autocmd Filetype jade setlocal ts=4 sw=4 sts=4 textwidth=119 expandtab autoindent fileformat=unix
 autocmd BufLeave term://* startinsert
 autocmd BufEnter term://* startinsert
 
-function! Temp()
-	if &buftype == "quickfix"
-		echo ''
-	else
-		cclose
-	endif
-endfunction
-
-augroup Hi
-		autocmd!
-		autocmd WinEnter,WinLeave * exec Temp()
-augroup END
 
 " === UNMAP THE FOLLOWING: ===
 nnoremap <nowait>dk <Esc>
 nnoremap <nowait>dj <Esc>
 
 " === ADDING COMMAND ===
-command -nargs=+ -complete=file Ex call ExecFile(<q-args>)
+command! -nargs=+ -complete=file Ex call ExecFile(<q-args>)
 
 " === FIX SLOW MAPPINGS ===
 iabbrev </ </<C-X><C-O>
@@ -284,8 +457,7 @@ nnoremap <nowait>W' ciW''<Esc>P
 nnoremap <space> :set hlsearch!<CR>
 nnoremap qq :silent call Quit() <CR>
 nnoremap <nowait><leader>w :silent! w! <CR>
-nnoremap <leader>q :silent call SaveQuit() <CR>
-nnoremap <nowait><leader>t :w <bar> :call OpenTerm()<CR>
+nnoremap <nowait><leader>t :call OpenTerm()<CR>
 map <leader>/ :<C-u>execute "!pydoc3 " . expand("<cword>")<CR>
 
 " === PLUGIN MAPPING ===
@@ -315,201 +487,8 @@ nnoremap <leader>j :wincmd j <bar> :silent! set autoread <CR>
 nnoremap <leader>k :wincmd k <bar> :silent! set autoread <CR>
 nnoremap <leader>l :wincmd l <bar> :silent! set autoread <CR>
 nnoremap <leader>= <C-W>:resize +5 <CR>
-nnoremap V <c-V>
+" nnoremap V <c-V>
 nnoremap <leader>- <C-W>:resize -5 <CR>
 
-" === FUNCTIONS ===
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-fun! <SID>StripTrailingWhitespaces()
-    let l = line(".")
-    let c = col(".")
-    %s/\s\+$//e
-    call cursor(l, c)
-endfun
-
-fun SearchDoc()
-	call inputsave()
-	let filename  = input("documentation search: ", "", "function")
-	call inputrestore()
-	execute "!pydoc3 " . filename
-endfun
-
-fun BufferForward()
-	let curbuf = bufnr("%")
-	let term_list = term_list()
-	let bufcount = bufnr("$")
-	if curbuf == bufcount
-		bfirst
-	else
-		for i in getbufinfo()
-			let somenum = i.bufnr
-			let somename = i.name
-			if index(term_list, somenum) != 0 && (somenum != "") && (curbuf < somenum) && (getbufvar('%', '&buftype') !=# 'scratch')
-				execute ":buffer ". somenum
-				break
-			elseif somenum == bufcount
-				bfirst
-				break
-			endif
-		endfor
-	endif
-endfun
-
-fun BufferBackward()
-	let curbuf = bufnr("%")
-	let term_list = term_list()
-	let buffirst = getbufinfo()[0].bufnr
-	if buffirst == curbuf
-		let curbuf = 9999
-	endif
-	for i in reverse(getbufinfo())
-		let somenum = i.bufnr
-		let somename = i.name
-		if (index(term_list, somenum) != 0 && (somenum != "")) && (curbuf > somenum) && (getbufvar('%', '&buftype') !=# 'scratch')
-				execute ":buffer ". somenum
-				break
-		endif
-	endfor
-endfun
-
-fun OpenTerm()
-	if (getbufvar('%', '&buftype') !=# 'terminal') && (len(term_list()) > 0)
-		for x in term_list()
-			execute "b" . x
-			break
-		endfor
-	else
-			wincmd=
-			term ++curwin
-	endif
-endfun
-
-fun ExecCurFile()
-	" exec 'term ++curwin'
-	call OpenTerm()
-	call term_sendkeys("%", "\clear" . "\<CR>")
-	"add more file types here if neeeded
-	call term_sendkeys("%", "\python3 " . expand('#:p'))
-	call term_sendkeys("%",  "\<CR>")
-endfun
-
-fun ExecFile(filename)
-	let argname = a:filename
-	"add more file types here if neeeded
-	if filereadable(argname)
-		call OpenTerm()
-		"exec 'term ++curwin'
-		call term_sendkeys("%", "\clear" . "\<CR>")
-		call term_sendkeys("%", "\python3 " . argname)
-		call term_sendkeys("%",  "\<CR>")
-	else
-		echo "NOT A VALID FILE"
-	endif
-endfun
-
-fun TerminalForward()
-	let a = term_list()
-	let c = 0
-	if (len(a) != 1)
-		for i in a
-			let c = i
-			if (bufnr(c) != bufnr("%"))
-				execute ":buffer ". c
-				break
-			endif
-		endfor
-	endif
-endfun
-
-fun TerminalBackward()
-	let a = reverse(term_list())
-	let c = 0
-	if (len(a) != 1)
-		for i in a
-			let c = i
-			if (bufnr(c) != bufnr("%"))
-				execute ":buffer ". c
-				break
-			endif
-		endfor
-	endif
-endfun
-
-" add no name condition for special quit
-fun Quit()
-	let buffers = filter(range(1, bufnr('$')), 'empty(bufname(v:val)) && bufwinnr(v:val) < 0')
-  if !empty(buffers)
-      exe 'silent! q! '.join(buffers, ' ')
-	endif
-	if empty(bufname("%"))
-		silent q!
-	elseif (len(getbufinfo()) == 1)
-		silent q!
-		silent bw!
-	else
-		silent bw!
-	endif
-endfun
-
-fun SaveQuit()
-	let buffers = filter(range(1, bufnr('$')), 'empty(bufname(v:val)) && bufwinnr(v:val) < 0')
-  if !empty(buffers)
-      exe 'silent q!'.join(buffers, ' ')
-	endif
-	if empty(bufname("%"))
-		silent q!
-	elseif (len(getbufinfo()) == 1)
-		silent wq!
-	else
-		silent w
-		silent bw!
-	endif
-endfun
-
-fun NavForward()
-	if (getbufvar("%", "&buftype") ==# 'terminal')
-		call TerminalForward()
-	else
-		call BufferForward()
-	endif
-endfun
-
-fun NavBackward()
-	if (getbufvar("%", "&buftype") ==# 'terminal')
-		call TerminalBackward()
-	else
-		call BufferBackward()
-	endif
-endfun
-
-function! ResizeSplits()
-	"later we can make logic for other stuff like for specific splits
-  wincmd=
-	exe "vert resize " . (winwidth(0) * 1000)
-endfunction
-
-function! CleverTab()
-	   if strpart( getline('.'), 0, col('.')-1 ) =~ '^\s*$'
-	      return "\<Tab>"
-	   else
-	      return "\<C-N>"
-	   endif
-	endfunction
-inoremap <Tab> <C-R>=CleverTab()<CR>
-autocmd InsertCharPre * call AutoComplete()
-fun! AutoComplete()
-    if v:char =~ '\K' && !pumvisible()
-        \ && getline('.')[col('.') - 4] !~ '\K'
-        \ && getline('.')[col('.') - 3] =~ '\K'
-        \ && getline('.')[col('.') - 2] =~ '\K' " last char
-        \ && getline('.')[col('.') - 1] !~ '\K'
-
-        call feedkeys("\<c-p>", "n")
-    end
-endfun
-
-
+" === VISUAL MODE MAPPINGS ===
+xnoremap <nowait> <space> <Esc>
