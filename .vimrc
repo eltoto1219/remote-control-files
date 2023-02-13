@@ -1,3 +1,8 @@
+" TODO:
+" 1. setup undo tree
+" 2. setup debugger
+" 3. learn and setup git integration
+"
 " === FUNCTIONS ===
 
 function! s:check_back_space() abort
@@ -40,7 +45,7 @@ function! BufferForward()
 	let curbuf = bufnr("%")
   let bufinfolist = getbufinfo()
 	let bufcount = bufnr("$")
-  let buffirst = bufinfolist[1].bufnr
+  let buffirst = bufinfolist[0].bufnr
 
   for i in getbufinfo()
 		let somenum = i.bufnr
@@ -56,12 +61,12 @@ function! BufferForward()
 		let cond6 = stridx(i.name, "!/bin/bash") == -1
 
 		if cond1 && cond2 && cond3 && cond5 && cond6
-			echo '--> N: ' . somename . ' #: ' . somenum
-			execute ":b " . somenum
+			echo '--> N: ' . somenum
+			execute ":silent b " . somenum
 			break
 		elseif somenum == bufcount
-			echo '--> N: ' . bufname(buffirst) . ' #: ' . buffirst
-			execute ':bfirst'
+			echo '--> N: ' . buffirst
+			execute ':silent bfirst'
 			break
 		endif
 
@@ -89,13 +94,13 @@ function! BufferBackward()
 
 
 			if curbuf == buffirst  && cond2 && cond5 && cond5 && cond6
-					echo '<-- N: ' . somename . ' #: ' . somenum
-					exe ":buffer " . somenum
+					echo '<-- N: ' . somenum
+					exe ":silent buffer " . somenum
 					break
 			elseif cond2 && cond4 && cond3 && cond5 && cond6
 					" echo 'heree'
-					echo '<-- N: ' . somename . ' #: ' . somenum
-					exe ":buffer " . somenum
+					echo '<-- N: ' . somenum
+					exe ":silent buffer " . somenum
 					break
 				endif
 		endfor
@@ -230,6 +235,7 @@ let g:ale_disable_lsp=1
 " === PLUGINS ===
 call plug#begin('~/.vim/plugged')
 Plug 'ervandew/supertab'
+Plug 'puremourning/vimspector'
 Plug 'wincent/ferret'
 Plug 'alvan/vim-closetag'
 Plug 'yuezk/vim-js'
@@ -282,7 +288,7 @@ let g:airline_mode_map = { 'n': 'N', 'i': "I", 'c': "C", "v": "V", "t": "T", "mu
 
 let g:ctrlp_working_path_mode = 'ra'
 let g:ctrlp_custom_ignore = {
-	\ 'dir':  '\v[\/]\.(git|hg|svn)$',
+	\ 'dir':  '\.git$\|\.yardoc\|node_modules\|log\|tmp$|\v[\/]\.(git|hg|svn)$|\__pycache__$\',
 	\ 'file': '\v\.(exe|so|dll)$',
 	\ 'link': 'some_bad_symbolic_links',
 	\ }
