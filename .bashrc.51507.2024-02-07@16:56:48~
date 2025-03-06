@@ -124,15 +124,6 @@ GRPC_PYTHON_BUILD_SYSTEM_ZLIB=1
 export AWS_PROFILE
 export GRPC_PYTHON_BUILD_SYSTEM_OPENSSL
 export GRPC_PYTHON_BUILD_SYSTEM_ZLIB
-export SNPE_VERSION=2.26.2.240911
-export SNPE_ROOT=/opt/qcom/aistack/qairt/$SNPE_VERSION/
-export ANDROID_NDK_ROOT=/opt/qcom/aistack/android-ndk-r25c-linux/
-export PATH=${ANDROID_NDK_ROOT}:${PATH}
-export HEXAGON_SDK_ROOT=/local/mnt/workspace/Qualcomm/Hexagon_SDK/4.2.0.3
-export SNPE_TARGET_ARCH=aarch64-android
-export SNPE_TARGET_STL=libc++_shared.so
-export SNPE_TARGET_DSPARCH=hexagon-v73
-alias envsetup="source ${SNPE_ROOT}/bin/envsetup.sh"
 
 
 
@@ -159,10 +150,7 @@ alias python=python3
 alias pip=pip3
 alias vim=nvim
 alias okta="sh ~/aws-okta-login.sh"
-alias sentinal="sudo /opt/sentinelone/bin/sentinelctl control start"
-# eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
+eval "$(/bin/brew shellenv)"
 
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 # MANAGED BY KTMR/ktmr-installer/roles/nix
@@ -180,12 +168,3 @@ if command -v direnv &>/dev/null; then
   eval "$( direnv hook "${SHELL}" )"
 fi
 # END MANAGED BY KTMR/ktmr-installer/roles/nix
-# MANAGED BY KTMR/ktmr-installer/roles/ktmr
-if [[ -r "${XDG_CONFIG_HOME:-${HOME}/.config}/ktmr/load.sh" ]]; then
-  source "${XDG_CONFIG_HOME:-${HOME}/.config}/ktmr/load.sh"
-fi
-# END MANAGED BY KTMR/ktmr-installer/roles/ktmr
-#
-#
-export LD_LIBRARY_PATH=/usr/local/cuda-12.2/lib64:$LD_LIBRARY_PATH
-export PATH=/usr/local/cuda-12.2/bin:$PATH

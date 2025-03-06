@@ -1,0 +1,97 @@
+Host *
+	PreferredAuthentications publickey,password
+	# ControlMaster auto
+	# ControlPath ~/.ssh/ssh-%r@%h:%p
+	ControlPersist 30m
+  # ForwardX11 yes
+  # ForwardX11Trusted no
+  # XAuthLocation /opt/X11/bin/xauth
+  ForwardAgent yes
+  Compression yes
+  KeepAlive yes
+
+
+Host verisk
+	HostName verisk.local
+	User i31541
+	Compression  yes
+	AddressFamily  inet
+
+
+Host demo
+	HostName 10.95.137.36
+	LocalForward 8502 localhost:8502
+	User ubuntu
+	IdentityFile ~/.ssh/i31541.pem
+	ProxyJump verisk
+	Compression  yes
+	AddressFamily  inet
+
+
+Host slips
+	HostName 10.95.132.139
+	LocalForward 8501 localhost:8501
+	User ubuntu
+	IdentityFile ~/.ssh/i29685.pem
+	ProxyJump verisk
+	Compression  yes
+	AddressFamily  inet
+
+
+Host ri1
+	HostName 10.95.134.239
+	User ubuntu
+	IdentityFile ~/.ssh/i31541.pem
+	LocalForward 8502 localhost:8502
+	ProxyJump verisk
+	Compression  yes
+	AddressFamily  inet
+
+
+
+Host google
+	HostName 34.66.141.212
+	User antoniomendoza
+	IdentityFile ~/.ssh/google_compute_engine
+	LocalForward 8503 localhost:8503
+	Compression yes
+	AddressFamily inet
+
+
+Host infra
+	HostName 3.238.96.27
+	User ubuntu
+	LocalForward 8503 localhost:8503
+	Compression yes
+	AddressFamily inet
+
+
+Host ds
+	HostName 34.201.21.157
+	User ubuntu
+	LocalForward 8504 localhost:8504
+	Compression yes
+	AddressFamily inet
+
+Host lambda
+	HostName 172.16.1.196
+	User antonio
+
+Host da
+	HostName 54.213.19.216
+	User ubuntu
+	IdentityFile "~/.ssh/antonios-kp.pem"
+
+Host sf
+	HostName 10.0.1.35
+	User antonio
+	LocalForward 8504 localhost:8504
+	# PreferredAuthentications password
+	# PubkeyAuthentication no
+	# PasswordAuthentication yes
+	#
+	#
+Host sf2
+    HostName 10.0.1.36
+    User antonio
+	LocalForward 8504 localhost:8504
